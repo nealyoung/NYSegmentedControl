@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "NYSegmentedControl"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "Animated, customizable replacement for UISegmentedControl"
 
   s.description  = <<-DESC
@@ -19,14 +19,13 @@ Pod::Spec.new do |s|
                    * Try to keep it short, snappy and to the point.
                    * Finally, don't worry about the indent, CocoaPods strips it!
                    DESC
-  s.frameworks   = 'QuartzCore'
   s.homepage     = "https://github.com/nealyoung/NYSegmentedControl"
   s.screenshots  = "https://github.com/nealyoung/NYSegmentedControl/raw/master/screenshot-dark.png", "https://github.com/nealyoung/NYSegmentedControl/raw/master/screenshot-light.png"
   s.license      = { :type => "MIT", :file => "LICENSE.md" }
-  s.author             = { "Neal Young" => "hi@nealyoung.me" }
+  s.author       = { "Neal Young" => "hi@nealyoung.me" }
   s.social_media_url   = "http://twitter.com/nealyoung"
   s.platform     = :ios, "7.0"
-  s.source       = { :git => "https://github.com/nealyoung/NYSegmentedControl.git", :commit => "338c2e9c4c1d7766df66f0ce1803145eb027c9a0" }
-  s.source_files  = "NYSegmentedControl", "NYSegmentedControl/**/*.{h,m}"
+  s.source       = { :git => "https://github.com/nealyoung/NYSegmentedControl.git", :tag => "1.0.1" }
+  s.source_files = "NYSegmentedControl/*.{h,m}"
   s.requires_arc = true
 end
