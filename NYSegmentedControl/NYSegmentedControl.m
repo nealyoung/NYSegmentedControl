@@ -11,7 +11,7 @@
 #import "NYSegment.h"
 #import "NYSegmentIndicator.h"
 
-@interface NYSegmentedControl () <NYSegmentDelegate> {
+@interface NYSegmentedControl () {
     UIColor *_backgroundColor;
 }
 
@@ -73,7 +73,6 @@
         
         for (NSString *segmentTitle in items) {
             NYSegment *segment = [[NYSegment alloc] initWithTitle:segmentTitle];
-            segment.delegate = self;
             [self addSubview:segment];
             [mutableSegments addObject:segment];
         }
@@ -184,7 +183,6 @@
     }
     
     NYSegment *newSegment = [[NYSegment alloc] initWithTitle:title];
-    newSegment.delegate = self;
     [self addSubview:newSegment];
     
     NSMutableArray *mutableSegments = [NSMutableArray arrayWithArray:self.segments];
@@ -256,11 +254,68 @@
     }
 }
 
+#pragma mark - Touch Tracking
+
+- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    // If the user is touching the slider, start tracking the drag. Otherwise, select the segement that was tapped
+    if (CGRectContainsPoint(self.selectedSegmentIndicator.bounds, [touch locationInView:self.selectedSegmentIndicator])) {
+        if (self.stylesTitleForSelectedSegment) {
+            NYSegment *previousSegment = self.segments[self.selectedSegmentIndex];
+            previousSegment.titleLabel.font = self.titleFont;
+            previousSegment.titleLabel.textColor = self.titleTextColor;
+        }
+        
+        return YES;
+    } else {
+        [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
+            if (CGRectContainsPoint(segment.frame, [touch locationInView:self])) {
+                if (index != self.selectedSegmentIndex) {
+                    [self moveSelectedSegmentIndicatorToSegmentAtIndex:index animated:YES];
+                    _selectedSegmentIndex = index;
+                    [self sendActionsForControlEvents:UIControlEventValueChanged];
+                }
+            }
+        }];
+    }
+    
+    return NO;
+}
+
+- (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    CGFloat xDiff = [touch locationInView:self.selectedSegmentIndicator].x - [touch previousLocationInView:self.selectedSegmentIndicator].x;
+    
+    // Reposition the indicator as long as it doesn't exit the bounds of the control
+    CGRect segmentIndicatorFrame = self.selectedSegmentIndicator.frame;
+    segmentIndicatorFrame.origin.x += xDiff;
+    
+    if (CGRectContainsRect(CGRectInset(self.bounds, self.segmentIndicatorInset, 0), segmentIndicatorFrame)) {
+        self.selectedSegmentIndicator.center = CGPointMake(self.selectedSegmentIndicator.center.x + xDiff, self.selectedSegmentIndicator.center.y);
+    }
+    
+    return YES;
+}
+
+- (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    // Select the segment containing the indicator's center
+    [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
+        if (CGRectContainsPoint(segment.frame, self.selectedSegmentIndicator.center)) {
+            [self moveSelectedSegmentIndicatorToSegmentAtIndex:index animated:YES];
+            
+            if (index != self.selectedSegmentIndex) {
+                _selectedSegmentIndex = index;
+                [self sendActionsForControlEvents:UIControlEventValueChanged];
+            }
+        }
+    }];
+}
+
+#pragma mark - Helpers
+
 - (CGRect)indicatorFrameForSegment:(NYSegment *)segment {
     return CGRectMake(CGRectGetMinX(segment.frame) + self.segmentIndicatorInset,
                       CGRectGetMinY(segment.frame) + self.segmentIndicatorInset,
-                      CGRectGetWidth(segment.frame) - (self.segmentIndicatorInset * 2.0f),
-                      CGRectGetHeight(segment.frame) - (self.segmentIndicatorInset * 2.0f));
+                      CGRectGetWidth(segment.frame) - (2.0f * self.segmentIndicatorInset),
+                      CGRectGetHeight(segment.frame) - (2.0f * self.segmentIndicatorInset));
 }
 
 #pragma mark - Getters and Setters
@@ -366,18 +421,6 @@
 - (void)setSelectedSegmentIndex:(NSUInteger)selectedSegmentIndex {
     [self moveSelectedSegmentIndicatorToSegmentAtIndex:selectedSegmentIndex animated:NO];
     _selectedSegmentIndex = selectedSegmentIndex;
-}
-
-#pragma mark - NYSegmentDelegate
-
-- (void)segmentSelected:(NYSegment *)segment {
-    NSInteger segmentIndex = [self.segments indexOfObject:segment];
-    
-    if (segmentIndex != self.selectedSegmentIndex) {
-        [self moveSelectedSegmentIndicatorToSegmentAtIndex:segmentIndex animated:YES];
-        _selectedSegmentIndex = segmentIndex;
-        [self sendActionsForControlEvents:UIControlEventValueChanged];
-    }
 }
 
 @end

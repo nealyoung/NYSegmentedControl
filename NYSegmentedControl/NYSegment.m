@@ -24,6 +24,7 @@ static CGFloat const kMinimumSegmentWidth = 68.0f;
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        self.userInteractionEnabled = NO;
         self.titleLabel = [[UILabel alloc] initWithFrame:self.frame];
         [self.titleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
         self.titleLabel.font = [UIFont systemFontOfSize:13.0f];
@@ -43,23 +44,9 @@ static CGFloat const kMinimumSegmentWidth = 68.0f;
     return self;
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(segmentSelected:)]) {
-        [self.delegate segmentSelected:self];
-    }
-}
-
 - (CGSize)sizeThatFits:(CGSize)size {
     CGSize sizeThatFits = [self.titleLabel sizeThatFits:size];
     return CGSizeMake(MAX(sizeThatFits.width * 1.4f, kMinimumSegmentWidth), sizeThatFits.height);
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-}
-
-- (void)setFrame:(CGRect)frame {
-    [super setFrame:frame];
 }
 
 @end

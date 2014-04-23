@@ -21,6 +21,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.userInteractionEnabled = NO;
         self.drawsGradientBackground = NO;
         self.opaque = NO;
         self.cornerRadius = 4.0f;
@@ -100,6 +101,8 @@
     CGContextRestoreGState(ctx);
     CGPathRelease(path);
 }
+
+#pragma mark - Getters and Setters
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
     _backgroundColor = backgroundColor;

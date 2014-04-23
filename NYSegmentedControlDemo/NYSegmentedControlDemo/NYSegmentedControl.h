@@ -24,6 +24,7 @@
 @property (nonatomic) UIColor *borderColor UI_APPEARANCE_SELECTOR;
 @property (nonatomic) CGFloat borderWidth UI_APPEARANCE_SELECTOR;
 
+// If set to YES, the control's background will be drawn with a background gradient specified by the gradientTopColor and gradientBottomColor properties
 @property (nonatomic) BOOL drawsGradientBackground;
 @property (nonatomic) UIColor *gradientTopColor UI_APPEARANCE_SELECTOR;
 @property (nonatomic) UIColor *gradientBottomColor UI_APPEARANCE_SELECTOR;
