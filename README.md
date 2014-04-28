@@ -12,7 +12,11 @@ NYSegmentedControl is a customizable, animated replacement for UISegmentedContro
 * Configure distinct text styles for the selected segment
 
 ### Installation
+#### Manual
 Add the files to your project manually by dragging the NYSegmentedControl directory into your Xcode project.
+
+#### CocoaPods
+Add `pod 'NYSegmentedControl'` to your Podfile, and run `pod install`.
 
 ### Usage
 Use is largely identical to UISegmentedControl. An example project is included in the NYSegmentedControlDemo directory.
