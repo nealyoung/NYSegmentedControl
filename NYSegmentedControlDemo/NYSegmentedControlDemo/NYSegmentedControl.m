@@ -259,19 +259,13 @@
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     // If the user is touching the slider, start tracking the drag. Otherwise, select the segement that was tapped
     if (CGRectContainsPoint(self.selectedSegmentIndicator.bounds, [touch locationInView:self.selectedSegmentIndicator])) {
-        if (self.stylesTitleForSelectedSegment) {
-            NYSegment *previousSegment = self.segments[self.selectedSegmentIndex];
-            previousSegment.titleLabel.font = self.titleFont;
-            previousSegment.titleLabel.textColor = self.titleTextColor;
-        }
-        
         return YES;
     } else {
+        // Otherwise, find the segment that the user touched, and select it
         [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
             if (CGRectContainsPoint(segment.frame, [touch locationInView:self])) {
                 if (index != self.selectedSegmentIndex) {
-                    [self moveSelectedSegmentIndicatorToSegmentAtIndex:index animated:YES];
-                    _selectedSegmentIndex = index;
+                    [self setSelectedSegmentIndex:index animated:YES];
                     [self sendActionsForControlEvents:UIControlEventValueChanged];
                 }
             }
@@ -282,13 +276,27 @@
 }
 
 - (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    if (self.stylesTitleForSelectedSegment) {
+        // Style the segment the center of the indicator is covering
+        [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
+            if (CGRectContainsPoint(segment.frame, self.selectedSegmentIndicator.center)) {
+                segment.titleLabel.font = self.selectedTitleFont;
+                segment.titleLabel.textColor = self.selectedTitleTextColor;
+            } else {
+                segment.titleLabel.font = self.titleFont;
+                segment.titleLabel.textColor = self.titleTextColor;
+            }
+        }];
+    }
+    
+    // Get the horizontal positition delta
     CGFloat xDiff = [touch locationInView:self.selectedSegmentIndicator].x - [touch previousLocationInView:self.selectedSegmentIndicator].x;
     
-    // Reposition the indicator as long as it doesn't exit the bounds of the control
-    CGRect segmentIndicatorFrame = self.selectedSegmentIndicator.frame;
-    segmentIndicatorFrame.origin.x += xDiff;
+    // Check that the indicator doesn't exit the bounds of the control
+    CGRect newSegmentIndicatorFrame = self.selectedSegmentIndicator.frame;
+    newSegmentIndicatorFrame.origin.x += xDiff;
     
-    if (CGRectContainsRect(CGRectInset(self.bounds, self.segmentIndicatorInset, 0), segmentIndicatorFrame)) {
+    if (CGRectContainsRect(CGRectInset(self.bounds, self.segmentIndicatorInset, 0), newSegmentIndicatorFrame)) {
         self.selectedSegmentIndicator.center = CGPointMake(self.selectedSegmentIndicator.center.x + xDiff, self.selectedSegmentIndicator.center.y);
     }
     
@@ -420,6 +428,11 @@
 
 - (void)setSelectedSegmentIndex:(NSUInteger)selectedSegmentIndex {
     [self moveSelectedSegmentIndicatorToSegmentAtIndex:selectedSegmentIndex animated:NO];
+    _selectedSegmentIndex = selectedSegmentIndex;
+}
+
+- (void)setSelectedSegmentIndex:(NSUInteger)selectedSegmentIndex animated:(BOOL)animated {
+    [self moveSelectedSegmentIndicatorToSegmentAtIndex:selectedSegmentIndex animated:animated];
     _selectedSegmentIndex = selectedSegmentIndex;
 }
 

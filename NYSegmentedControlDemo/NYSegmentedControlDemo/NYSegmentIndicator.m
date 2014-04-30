@@ -9,18 +9,18 @@
 
 #import "NYSegmentIndicator.h"
 
-@interface NYSegmentIndicator () {
-    UIColor *_backgroundColor;
-}
-
-@end
-
 @implementation NYSegmentIndicator
+
+@dynamic borderColor, borderWidth, cornerRadius;
+
++ (Class)layerClass {
+    return [CAGradientLayer class];
+}
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.layer.masksToBounds = YES;
         self.userInteractionEnabled = NO;
         self.drawsGradientBackground = NO;
         self.opaque = NO;
@@ -34,88 +34,43 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathMoveToPoint(path, NULL, CGRectGetMidX(rect), CGRectGetMinY(rect));
-    CGPathAddArcToPoint(path, NULL, CGRectGetMaxX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMaxY(rect), self.cornerRadius);
-    CGPathAddArcToPoint(path, NULL, CGRectGetMaxX(rect), CGRectGetMaxY(rect), CGRectGetMinX(rect), CGRectGetMaxY(rect), self.cornerRadius);
-    CGPathAddArcToPoint(path, NULL, CGRectGetMinX(rect), CGRectGetMaxY(rect), CGRectGetMinX(rect), CGRectGetMinY(rect), self.cornerRadius);
-    CGPathAddArcToPoint(path, NULL, CGRectGetMinX(rect), CGRectGetMinY(rect), CGRectGetMaxX(rect), CGRectGetMinY(rect), self.cornerRadius);
-    CGPathCloseSubpath(path);
-    
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    
-    CGContextSaveGState(ctx);
-    CGContextAddPath(ctx, path);
     if (self.drawsGradientBackground) {
-        CGContextClip(ctx);
-        
-        CGFloat topGradientComponents[4];
-        [self.gradientTopColor getRed:&topGradientComponents[0]
-                                green:&topGradientComponents[1]
-                                 blue:&topGradientComponents[2]
-                                alpha:&topGradientComponents[3]];
-        
-        CGFloat bottomGradientComponents[4];
-        [self.gradientBottomColor getRed:&bottomGradientComponents[0]
-                                   green:&bottomGradientComponents[1]
-                                    blue:&bottomGradientComponents[2]
-                                   alpha:&bottomGradientComponents[3]];
-        
-        CGFloat gradientColors [] = {
-            topGradientComponents[0], topGradientComponents[1], topGradientComponents[2], topGradientComponents[3],
-            bottomGradientComponents[0], bottomGradientComponents[1], bottomGradientComponents[2], bottomGradientComponents[3]
-        };
-        
-        CGColorSpaceRef baseSpace = CGColorSpaceCreateDeviceRGB();
-        CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, gradientColors, NULL, 2);
-        
-        CGContextDrawLinearGradient(ctx,
-                                    gradient,
-                                    CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect)),
-                                    CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect)),
-                                    0);
-        
-        CGGradientRelease(gradient);
-        CGColorSpaceRelease(baseSpace);
+        CAGradientLayer *gradientLayer = (CAGradientLayer *)self.layer;
+        gradientLayer.colors = @[(__bridge id)[self.gradientTopColor CGColor],
+                                 (__bridge id)[self.gradientBottomColor CGColor]];
     } else {
-        CGContextSetFillColorWithColor(ctx, [self.backgroundColor CGColor]);
-        CGContextFillPath(ctx);
+        self.layer.backgroundColor = [self.backgroundColor CGColor];
     }
     
     if (self.borderWidth > 0.0f) {
-        CGRect strokeRect = CGRectInset(self.bounds, self.borderWidth / 2.0f, self.borderWidth / 2.0f);
-        CGMutablePathRef strokePath = CGPathCreateMutable();
-        CGPathMoveToPoint(strokePath, NULL, CGRectGetMidX(strokeRect), CGRectGetMinY(strokeRect));
-        CGPathAddArcToPoint(strokePath, NULL, CGRectGetMaxX(strokeRect), CGRectGetMinY(strokeRect), CGRectGetMaxX(strokeRect), CGRectGetMaxY(strokeRect), self.cornerRadius);
-        CGPathAddArcToPoint(strokePath, NULL, CGRectGetMaxX(strokeRect), CGRectGetMaxY(strokeRect), CGRectGetMinX(strokeRect), CGRectGetMaxY(strokeRect), self.cornerRadius);
-        CGPathAddArcToPoint(strokePath, NULL, CGRectGetMinX(strokeRect), CGRectGetMaxY(strokeRect), CGRectGetMinX(strokeRect), CGRectGetMinY(strokeRect), self.cornerRadius);
-        CGPathAddArcToPoint(strokePath, NULL, CGRectGetMinX(strokeRect), CGRectGetMinY(strokeRect), CGRectGetMaxX(strokeRect), CGRectGetMinY(strokeRect), self.cornerRadius);
-        CGPathCloseSubpath(strokePath);
-        CGContextAddPath(ctx, strokePath);
-        
-        CGContextSetLineWidth(ctx, self.borderWidth);
-        CGContextSetStrokeColorWithColor(ctx, [self.borderColor CGColor]);
-        CGContextStrokePath(ctx);
     }
-    
-    CGContextRestoreGState(ctx);
-    CGPathRelease(path);
 }
 
 #pragma mark - Getters and Setters
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor {
-    _backgroundColor = backgroundColor;
-    [self setNeedsDisplay];
+- (void)setBorderColor:(UIColor *)borderColor {
+    self.layer.borderColor = [borderColor CGColor];
 }
 
-- (UIColor *)backgroundColor {
-    return _backgroundColor;
+- (UIColor *)borderColor {
+    return [UIColor colorWithCGColor:self.layer.borderColor];
+}
+
+- (void)setBorderWidth:(CGFloat)borderWidth {
+    self.layer.borderWidth = borderWidth;
+}
+
+- (CGFloat)borderWidth {
+    return self.layer.borderWidth;
 }
 
 - (void)setCornerRadius:(CGFloat)cornerRadius {
-    _cornerRadius = cornerRadius;
+    self.layer.cornerRadius = cornerRadius;
     [self setNeedsDisplay];
+}
+
+- (CGFloat)cornerRadius {
+    return self.layer.cornerRadius;
 }
 
 - (void)setDrawsGradientBackground:(BOOL)drawsGradientBackground {
