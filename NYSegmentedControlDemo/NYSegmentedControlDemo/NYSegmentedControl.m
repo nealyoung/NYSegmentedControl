@@ -11,9 +11,7 @@
 #import "NYSegment.h"
 #import "NYSegmentIndicator.h"
 
-@interface NYSegmentedControl () {
-    UIColor *_backgroundColor;
-}
+@interface NYSegmentedControl ()
 
 @property NSArray *segments;
 @property NYSegmentIndicator *selectedSegmentIndicator;
@@ -25,13 +23,20 @@
 
 @implementation NYSegmentedControl
 
-@dynamic numberOfSegments;
-@dynamic drawsSegmentIndicatorGradientBackground;
-@dynamic segmentIndicatorBackgroundColor;
-@dynamic segmentIndicatorGradientTopColor;
-@dynamic segmentIndicatorGradientBottomColor;
-@dynamic segmentIndicatorBorderColor;
-@dynamic segmentIndicatorBorderWidth;
+@dynamic borderColor,
+         borderWidth,
+         cornerRadius,
+         numberOfSegments,
+         drawsSegmentIndicatorGradientBackground,
+         segmentIndicatorBackgroundColor,
+         segmentIndicatorGradientTopColor,
+         segmentIndicatorGradientBottomColor,
+         segmentIndicatorBorderColor,
+         segmentIndicatorBorderWidth;
+
++ (Class)layerClass {
+    return [CAGradientLayer class];
+}
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -43,14 +48,15 @@
         _selectedTitleFont = [UIFont boldSystemFontOfSize:13.0f];
         _selectedTitleTextColor = [UIColor blackColor];
         _stylesTitleForSelectedSegment = YES;
-        _cornerRadius = 4.0f;
         _segmentIndicatorInset = 0.0f;
         _segmentIndicatorAnimationDuration = 0.15f;
         _gradientTopColor = [UIColor colorWithRed:0.21f green:0.21f blue:0.21f alpha:1.0f];
         _gradientBottomColor = [UIColor colorWithRed:0.16f green:0.16f blue:0.16f alpha:1.0f];
 
-        _borderColor = [UIColor lightGrayColor];
-        _borderWidth = 1.0f;
+        self.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+        self.layer.masksToBounds = YES;
+        self.layer.cornerRadius = 4.0f;
+        self.layer.borderWidth = 1.0f;
         
         self.backgroundColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
         self.drawsGradientBackground = NO;
@@ -119,62 +125,13 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-    UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:self.cornerRadius];
-    CGPathRef path = [bezierPath CGPath];
-    
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    
-    CGContextSaveGState(ctx);
-    CGContextAddPath(ctx, path);
     if (self.drawsGradientBackground) {
-        CGContextClip(ctx);
-        
-        CGFloat topGradientComponents[4];
-        [self.gradientTopColor getRed:&topGradientComponents[0]
-                                green:&topGradientComponents[1]
-                                 blue:&topGradientComponents[2]
-                                alpha:&topGradientComponents[3]];
-        
-        CGFloat bottomGradientComponents[4];
-        [self.gradientBottomColor getRed:&bottomGradientComponents[0]
-                                   green:&bottomGradientComponents[1]
-                                    blue:&bottomGradientComponents[2]
-                                   alpha:&bottomGradientComponents[3]];
-        
-        CGFloat gradientColors [] = {
-            topGradientComponents[0], topGradientComponents[1], topGradientComponents[2], topGradientComponents[3],
-            bottomGradientComponents[0], bottomGradientComponents[1], bottomGradientComponents[2], bottomGradientComponents[3]
-        };
-        
-        CGColorSpaceRef baseSpace = CGColorSpaceCreateDeviceRGB();
-        CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, gradientColors, NULL, 2);
-        
-        CGContextDrawLinearGradient(ctx,
-                                    gradient,
-                                    CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect)),
-                                    CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect)),
-                                    0);
-        
-        CGGradientRelease(gradient);
-        CGColorSpaceRelease(baseSpace);
+        CAGradientLayer *gradientLayer = (CAGradientLayer *)self.layer;
+        gradientLayer.colors = @[(__bridge id)[self.gradientTopColor CGColor],
+                                 (__bridge id)[self.gradientBottomColor CGColor]];
     } else {
-        CGContextSetFillColorWithColor(ctx, [self.backgroundColor CGColor]);
-        CGContextFillPath(ctx);
+        self.layer.backgroundColor = [self.backgroundColor CGColor];
     }
-    
-    if (self.borderWidth > 0.0f) {
-        // Create an inset rectange so the stroke is not clipped around the edges
-        CGRect strokeRect = CGRectInset(self.bounds, self.borderWidth / 2.0f, self.borderWidth / 2.0f);
-        UIBezierPath *strokeBezierPath = [UIBezierPath bezierPathWithRoundedRect:strokeRect cornerRadius:self.cornerRadius];
-        CGPathRef strokePath = [strokeBezierPath CGPath];
-        CGContextAddPath(ctx, strokePath);
-        CGContextSetLineWidth(ctx, self.borderWidth);
-        CGContextSetStrokeColorWithColor(ctx, [self.borderColor CGColor]);
-        CGContextStrokePath(ctx);
-    }
-    
-    CGContextRestoreGState(ctx);
-    //CGPathRelease(path);
 }
 
 - (void)insertSegmentWithTitle:(NSString *)title atIndex:(NSUInteger)index {
@@ -223,9 +180,12 @@
 }
 
 - (void)moveSelectedSegmentIndicatorToSegmentAtIndex:(NSUInteger)index animated:(BOOL)animated {
-    NYSegment *previousSegment = self.segments[self.selectedSegmentIndex];
-    previousSegment.titleLabel.font = self.titleFont;
-    previousSegment.titleLabel.textColor = self.titleTextColor;
+    // If we're moving the indicator back to the originally selected segment, don't change the segment's font style
+    if (index != self.selectedSegmentIndex) {
+        NYSegment *previousSegment = self.segments[self.selectedSegmentIndex];
+        previousSegment.titleLabel.font = self.titleFont;
+        previousSegment.titleLabel.textColor = self.titleTextColor;
+    }
     
     NYSegment *selectedSegment = self.segments[index];
     
@@ -289,7 +249,7 @@
         }];
     }
     
-    // Get the horizontal positition delta
+    // Find the difference in horizontal position between the current and previous touches
     CGFloat xDiff = [touch locationInView:self.selectedSegmentIndicator].x - [touch previousLocationInView:self.selectedSegmentIndicator].x;
     
     // Check that the indicator doesn't exit the bounds of the control
@@ -333,23 +293,37 @@
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
-    _backgroundColor = backgroundColor;
-    [self setNeedsDisplay];
+    self.layer.backgroundColor = [backgroundColor CGColor];
 }
 
 - (UIColor *)backgroundColor {
-    return _backgroundColor;
+    return [UIColor colorWithCGColor:self.layer.backgroundColor];
+}
+
+- (void)setBorderColor:(UIColor *)borderColor {
+    self.layer.borderColor = [borderColor CGColor];
+}
+
+- (UIColor *)borderColor {
+    return [UIColor colorWithCGColor:self.layer.borderColor];
+}
+
+- (void)setBorderWidth:(CGFloat)borderWidth {
+    self.layer.borderWidth = borderWidth;
+}
+
+- (CGFloat)borderWidth {
+    return self.layer.borderWidth;
 }
 
 - (void)setCornerRadius:(CGFloat)cornerRadius {
-    _cornerRadius = cornerRadius;
+    self.layer.cornerRadius = cornerRadius;
     self.selectedSegmentIndicator.cornerRadius = cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
     [self setNeedsDisplay];
 }
 
-- (void)setFrame:(CGRect)frame {
-    [super setFrame:frame];
-    self.selectedSegmentIndicator.cornerRadius = self.cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
+- (CGFloat)cornerRadius {
+    return self.layer.cornerRadius;
 }
 
 - (void)setDrawsSegmentIndicatorGradientBackground:(BOOL)drawsSegmentIndicatorGradientBackground {
@@ -358,6 +332,11 @@
 
 - (BOOL)drawsSegmentIndicatorGradientBackground {
     return self.selectedSegmentIndicator.drawsGradientBackground;
+}
+
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    self.selectedSegmentIndicator.cornerRadius = self.cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
 }
 
 - (void)setSegmentIndicatorBackgroundColor:(UIColor *)segmentIndicatorBackgroundColor {

@@ -41,9 +41,6 @@
     } else {
         self.layer.backgroundColor = [self.backgroundColor CGColor];
     }
-    
-    if (self.borderWidth > 0.0f) {
-    }
 }
 
 #pragma mark - Getters and Setters
