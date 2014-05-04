@@ -23,17 +23,6 @@
 
 @implementation NYSegmentedControl
 
-@dynamic borderColor,
-         borderWidth,
-         cornerRadius,
-         numberOfSegments,
-         drawsSegmentIndicatorGradientBackground,
-         segmentIndicatorBackgroundColor,
-         segmentIndicatorGradientTopColor,
-         segmentIndicatorGradientBottomColor,
-         segmentIndicatorBorderColor,
-         segmentIndicatorBorderWidth;
-
 + (Class)layerClass {
     return [CAGradientLayer class];
 }
