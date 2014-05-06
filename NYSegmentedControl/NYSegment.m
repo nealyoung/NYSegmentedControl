@@ -9,9 +9,9 @@
 
 #import "NYSegment.h"
 
-@implementation NYSegment
-
 static CGFloat const kMinimumSegmentWidth = 68.0f;
+
+@implementation NYSegment
 
 - (instancetype)initWithTitle:(NSString *)title {
     self = [self initWithFrame:CGRectZero];
@@ -26,20 +26,10 @@ static CGFloat const kMinimumSegmentWidth = 68.0f;
     if (self) {
         self.userInteractionEnabled = NO;
         self.titleLabel = [[UILabel alloc] initWithFrame:self.frame];
-        [self.titleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+        self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.titleLabel.font = [UIFont systemFontOfSize:13.0f];
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:self.titleLabel];
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_titleLabel]|"
-                                                                     options:0
-                                                                     metrics:nil
-                                                                       views:NSDictionaryOfVariableBindings(_titleLabel)]];
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_titleLabel]|"
-                                                                     options:0
-                                                                     metrics:nil
-                                                                       views:NSDictionaryOfVariableBindings(_titleLabel)]];
     }
     return self;
 }
