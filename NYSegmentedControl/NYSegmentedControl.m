@@ -38,37 +38,52 @@
     return [CAGradientLayer class];
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    
+    if (self) {
+        [self initialize];
+    }
+    
+    return self;
+}
+
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     
     if (self) {
-        // We need to directly access the ivars for UIAppearance properties in the initializer
-        _titleFont = [UIFont systemFontOfSize:13.0f];
-        _titleTextColor = [UIColor blackColor];
-        _selectedTitleFont = [UIFont boldSystemFontOfSize:13.0f];
-        _selectedTitleTextColor = [UIColor blackColor];
-        _stylesTitleForSelectedSegment = YES;
-        _segmentIndicatorInset = 0.0f;
-        _segmentIndicatorAnimationDuration = 0.15f;
-        _gradientTopColor = [UIColor colorWithRed:0.21f green:0.21f blue:0.21f alpha:1.0f];
-        _gradientBottomColor = [UIColor colorWithRed:0.16f green:0.16f blue:0.16f alpha:1.0f];
-
-        self.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-        self.layer.masksToBounds = YES;
-        self.layer.cornerRadius = 4.0f;
-        self.layer.borderWidth = 1.0f;
-        
-        self.backgroundColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
-        self.drawsGradientBackground = NO;
-        self.drawsSegmentIndicatorGradientBackground = NO;
-        self.opaque = NO;
-        self.segments = [NSArray array];
-        
-        self.selectedSegmentIndicator = [[NYSegmentIndicator alloc] initWithFrame:CGRectZero];
-        [self addSubview:self.selectedSegmentIndicator];
+        [self initialize];
     }
     
     return self;
+}
+
+- (void)initialize
+{
+    // We need to directly access the ivars for UIAppearance properties in the initializer
+    _titleFont = [UIFont systemFontOfSize:13.0f];
+    _titleTextColor = [UIColor blackColor];
+    _selectedTitleFont = [UIFont boldSystemFontOfSize:13.0f];
+    _selectedTitleTextColor = [UIColor blackColor];
+    _stylesTitleForSelectedSegment = YES;
+    _segmentIndicatorInset = 0.0f;
+    _segmentIndicatorAnimationDuration = 0.15f;
+    _gradientTopColor = [UIColor colorWithRed:0.21f green:0.21f blue:0.21f alpha:1.0f];
+    _gradientBottomColor = [UIColor colorWithRed:0.16f green:0.16f blue:0.16f alpha:1.0f];
+    
+    self.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+    self.layer.masksToBounds = YES;
+    self.layer.cornerRadius = 4.0f;
+    self.layer.borderWidth = 1.0f;
+    
+    self.backgroundColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
+    self.drawsGradientBackground = NO;
+    self.drawsSegmentIndicatorGradientBackground = NO;
+    self.opaque = NO;
+    self.segments = [NSArray array];
+    
+    self.selectedSegmentIndicator = [[NYSegmentIndicator alloc] initWithFrame:CGRectZero];
+    [self addSubview:self.selectedSegmentIndicator];
 }
 
 - (instancetype)initWithItems:(NSArray *)items {
