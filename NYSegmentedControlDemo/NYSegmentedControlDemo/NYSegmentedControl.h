@@ -143,7 +143,7 @@
  Inserts a segment at the specified index.
  
  @param title A string to use as the segment's title.
- @param index The index of the segment. It must be a number between 0 and the number of segments (numberOfSegments) minus 1; values exceeding this upper range are pinned to it.
+ @param index The index of the segment. It must be a number between 0 and the number of segments (numberOfSegments); values exceeding this upper range are pinned to it.
  */
 - (void)insertSegmentWithTitle:(NSString *)title atIndex:(NSUInteger)index;
 

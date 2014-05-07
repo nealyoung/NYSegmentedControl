@@ -157,8 +157,8 @@
 }
 
 - (void)removeSegmentAtIndex:(NSUInteger)index {
-    if (index >= [self.segments count]) {
-        return;
+    if (index >= self.numberOfSegments) {
+        index = self.numberOfSegments - 1;
     }
     
     NYSegment *segment = self.segments[index];
