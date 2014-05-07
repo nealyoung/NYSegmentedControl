@@ -11,8 +11,6 @@
 
 @implementation NYSegmentIndicator
 
-@dynamic borderColor, borderWidth, cornerRadius;
-
 + (Class)layerClass {
     return [CAGradientLayer class];
 }

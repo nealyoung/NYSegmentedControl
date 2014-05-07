@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "NYSegmentedControl"
-  s.version          = "1.0.2"
+  s.version          = "1.0.3"
   s.summary          = "Animated, customizable replacement for UISegmentedControl"
   s.description      = "NYSegmentedControl is a customizable, animated replacement for UISegmentedControl inspired by controls found in Instagram, Foursquare, and other apps."
   s.homepage         = "https://github.com/nealyoung/NYSegmentedControl"
