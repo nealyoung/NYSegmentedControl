@@ -15,7 +15,7 @@ static CGFloat const kMinimumSegmentWidth = 68.0f;
 
 - (instancetype)initWithTitle:(NSString *)title {
     self = [self initWithFrame:CGRectZero];
-    if (self) {        
+    if (self) {
         self.titleLabel.text = title;
     }
     return self;
