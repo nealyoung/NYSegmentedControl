@@ -172,6 +172,10 @@
 }
 
 - (void)removeAllSegments {
+    for (NYSegment *segment in self.segments) {
+        [segment removeFromSuperview];
+    }
+    
     self.segments = [NSArray array];
     [self setNeedsLayout];
 }
