@@ -21,7 +21,7 @@ Add `pod 'NYSegmentedControl'` to your Podfile, and run `pod install`.
 ### Usage
 Use is largely identical to UISegmentedControl. An example project is included in the NYSegmentedControlDemo directory.
 
-```
+```objc
 // Import the class and create an NYSegmentedControl instance
 #import "NYSegmentedControl.h"
 
