@@ -24,9 +24,9 @@
     [self.navigationController.navigationBar setBarStyle:UIBarStyleBlackTranslucent];
     
     self.view.backgroundColor = [UIColor colorWithWhite:0.2f alpha:1.0f];
-    self.navigationController.navigationBar.barTintColor = [UIColor colorWithWhite:0.26f alpha:1.0f];
-    self.navigationController.navigationBar.translucent = NO;
-    self.extendedLayoutIncludesOpaqueBars = YES;
+    //self.navigationController.navigationBar.barTintColor = [UIColor colorWithWhite:0.26f alpha:1.0f];
+    //self.navigationController.navigationBar.translucent = NO;
+    //self.extendedLayoutIncludesOpaqueBars = YES;
 
     // Control in navigation bar
     self.segmentedControl = [[NYSegmentedControl alloc] initWithItems:@[@"Light", @"Dark"]];
@@ -78,7 +78,7 @@
     foursquareSegmentedControl.borderWidth = 0.0f;
     foursquareSegmentedControl.segmentIndicatorBorderWidth = 0.0f;
     foursquareSegmentedControl.segmentIndicatorInset = 1.0f;
-    foursquareSegmentedControl.segmentIndicatorBorderColor = self.view.tintColor;
+    foursquareSegmentedControl.segmentIndicatorBorderColor = self.view.backgroundColor;
     [foursquareSegmentedControl sizeToFit];
     foursquareSegmentedControl.cornerRadius = CGRectGetHeight(foursquareSegmentedControl.frame) / 2.0f;
     foursquareSegmentedControl.center = CGPointMake(lightControlExampleView.center.x, lightControlExampleView.center.y + 30.0f);
