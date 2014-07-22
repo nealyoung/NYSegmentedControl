@@ -434,38 +434,50 @@
     _selectedSegmentIndex = selectedSegmentIndex;
 }
 
-- (void)moveSelectedSegmentIndicatorSimultaneouslyToIndex:(CGFloat)index {
-    if (index > 0 && index < self.segments.count) { // make sure that this code won't work with first and last segments
-        CGFloat diffIndexPercantage = separateLocalIndexDiffFromIndex(index);
+- (void)triggerMultipleSegmentsBeingScrolledToIndex:(CGFloat)index withOffset:(CGFloat)offset {
+    NSInteger direction = index > self.selectedSegmentIndex ? 1 : -1;
+    BOOL scrolledFromLeftToRight = direction == 1;
+    BOOL didScrolledFewSegments = ABS(self.selectedSegmentIndex - (NSInteger)index) > 1;
+    
+    if (didScrolledFewSegments) {
+        NSInteger newIndex = self.selectedSegmentIndex = (index - offset);
+        
+        if (!scrolledFromLeftToRight) {
+            newIndex = (newIndex + 1) * direction;
+        }
+        
+        if (newIndex >= 0 && newIndex < self.segments.count - 1) {
+            _selectedSegmentIndex = newIndex;
+        }
+    }
+}
+
+- (void)moveSelectedSegmentIndicatorToSegmentAtIndex:(NSInteger)clearIndex withOffset:(CGFloat)offset {
+    CGFloat index = clearIndex + offset;
+    
+    if (index > 0 && index < self.segments.count) { // make sure that this code won't work with first and last segments if scrolled out of segments indexes
         NSInteger direction = index > self.selectedSegmentIndex ? 1 : -1;
         
-        if (diffIndexPercantage == 0) { // if no diff from current position then we should move it to the position
+        if (offset == 0) { // if no diff from current position then we should move it to the position
             [self setSelectedSegmentIndex:index];
         } else { // when we have dx
-            if (ABS(self.selectedSegmentIndex - (NSInteger)index) > 1) {
-                NSInteger newIndex = self.selectedSegmentIndex = (index - diffIndexPercantage);
-                
-                if (direction == -1) {
-                    newIndex = (newIndex + 1) * direction;
-                }
-                
-                if (newIndex >= 0 && newIndex < self.segments.count - 1) {
-                    _selectedSegmentIndex = newIndex;
-                }
-            } 
+            BOOL scrolledFromLeftToRight = direction == 1;
+            BOOL didScrolledFewSegments = ABS(self.selectedSegmentIndex - clearIndex) > 1;
+            
+            [self triggerMultipleSegmentsBeingScrolledToIndex:index withOffset:offset];
             
             NSInteger nextSegmentIndex = self.selectedSegmentIndex + direction;
             
             if (nextSegmentIndex >= 0 && nextSegmentIndex < self.segments.count) {
-                NYSegment *segmentFrom = self.segments[self.selectedSegmentIndex];
-                NYSegment *segmentTo = self.segments[self.selectedSegmentIndex + direction];
+                NYSegment *sourceSegment = self.segments[self.selectedSegmentIndex];
+                NYSegment *destinationSegment = self.segments[self.selectedSegmentIndex + direction];
                 
-                CGFloat distance = ABS(segmentTo.frame.origin.x - segmentFrom.frame.origin.x);
-                CGFloat distanceToGo = distance * diffIndexPercantage;
-                CGFloat startPosition = segmentFrom.frame.origin.x;
+                CGFloat distance = ABS(destinationSegment.frame.origin.x - sourceSegment.frame.origin.x);
+                CGFloat distanceToGo = distance * offset;
+                CGFloat startPosition = sourceSegment.frame.origin.x;
                 
-                if (direction == -1) {
-                    startPosition -= segmentFrom.frame.size.width;
+                if (!scrolledFromLeftToRight && !didScrolledFewSegments) {
+                    startPosition -= sourceSegment.frame.size.width;
                 }
                 
                 self.selectedSegmentIndicator.frame = (CGRect){
@@ -477,14 +489,10 @@
             }
         }
     } else {
-        [self setSelectedSegmentIndex:index];
+        [self setSelectedSegmentIndex:index];        
     }
 }
 
-CGFloat separateLocalIndexDiffFromIndex(CGFloat index) {
-    double intPart = 0.0;
-    float localIndex = modf(index, &intPart);
-    return (CGFloat)localIndex;
-}
+
 
 @end
