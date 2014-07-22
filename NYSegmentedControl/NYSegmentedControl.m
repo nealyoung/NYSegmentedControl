@@ -436,13 +436,13 @@
 
 - (void)triggerMultipleSegmentsBeingScrolledToIndex:(CGFloat)index withOffset:(CGFloat)offset {
     NSInteger direction = index > self.selectedSegmentIndex ? 1 : -1;
-    BOOL scrolledFromLeftToRight = direction == 1;
+    BOOL didScrolledBackward = direction == -1;
     BOOL didScrolledFewSegments = ABS(self.selectedSegmentIndex - (NSInteger)index) > 1;
     
     if (didScrolledFewSegments) {
         NSInteger newIndex = self.selectedSegmentIndex = (index - offset);
         
-        if (!scrolledFromLeftToRight) {
+        if (didScrolledBackward) {
             newIndex = (newIndex + 1) * direction;
         }
         
@@ -461,7 +461,7 @@
         if (offset == 0) { // if no diff from current position then we should move it to the position
             [self setSelectedSegmentIndex:index];
         } else { // when we have dx
-            BOOL scrolledFromLeftToRight = direction == 1;
+            BOOL didScrolledBackward = direction == -1;
             BOOL didScrolledFewSegments = ABS(self.selectedSegmentIndex - clearIndex) > 1;
             
             [self triggerMultipleSegmentsBeingScrolledToIndex:index withOffset:offset];
@@ -476,7 +476,7 @@
                 CGFloat distanceToGo = distance * offset;
                 CGFloat startPosition = sourceSegment.frame.origin.x;
                 
-                if (!scrolledFromLeftToRight && !didScrolledFewSegments) {
+                if (didScrolledBackward && !didScrolledFewSegments) {
                     startPosition -= sourceSegment.frame.size.width;
                 }
                 
