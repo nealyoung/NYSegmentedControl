@@ -435,32 +435,49 @@
 }
 
 - (void)moveSelectedSegmentIndicatorSimultaneouslyToIndex:(CGFloat)index {
-    if (index >= 0 && index <= self.segments.count -1) { // make sure that this code won't work with first and last segments
+    if (index > 0 && index < self.segments.count) { // make sure that this code won't work with first and last segments
         CGFloat diffIndexPercantage = separateLocalIndexDiffFromIndex(index);
+        NSInteger direction = index > self.selectedSegmentIndex ? 1 : -1;
         
         if (diffIndexPercantage == 0) { // if no diff from current position then we should move it to the position
             [self setSelectedSegmentIndex:index];
         } else { // when we have dx
-            NSInteger direction = index > self.selectedSegmentIndex ? 1 : -1;
+            if (ABS(self.selectedSegmentIndex - (NSInteger)index) > 1) {
+                NSInteger newIndex = self.selectedSegmentIndex = (index - diffIndexPercantage);
+                
+                if (direction == -1) {
+                    newIndex = (newIndex + 1) * direction;
+                }
+                
+                if (newIndex >= 0 && newIndex < self.segments.count - 1) {
+                    _selectedSegmentIndex = newIndex;
+                }
+            } 
             
-            NYSegment *segmentFrom = self.segments[self.selectedSegmentIndex];
-            NYSegment *segmentTo = self.segments[self.selectedSegmentIndex + direction];
+            NSInteger nextSegmentIndex = self.selectedSegmentIndex + direction;
             
-            CGFloat distance = ABS(segmentTo.frame.origin.x - segmentFrom.frame.origin.x);
-            CGFloat distanceToGo = distance * diffIndexPercantage;
-            CGFloat startPosition = segmentFrom.frame.origin.x;
-            
-            if (direction == -1) {
-                startPosition -= segmentFrom.frame.size.width;
+            if (nextSegmentIndex >= 0 && nextSegmentIndex < self.segments.count) {
+                NYSegment *segmentFrom = self.segments[self.selectedSegmentIndex];
+                NYSegment *segmentTo = self.segments[self.selectedSegmentIndex + direction];
+                
+                CGFloat distance = ABS(segmentTo.frame.origin.x - segmentFrom.frame.origin.x);
+                CGFloat distanceToGo = distance * diffIndexPercantage;
+                CGFloat startPosition = segmentFrom.frame.origin.x;
+                
+                if (direction == -1) {
+                    startPosition -= segmentFrom.frame.size.width;
+                }
+                
+                self.selectedSegmentIndicator.frame = (CGRect){
+                    startPosition + distanceToGo,
+                    self.selectedSegmentIndicator.frame.origin.y,
+                    self.selectedSegmentIndicator.frame.size.width,
+                    self.selectedSegmentIndicator.frame.size.height
+                };
             }
-            
-            self.selectedSegmentIndicator.frame = (CGRect){
-                startPosition + distanceToGo,
-                self.selectedSegmentIndicator.frame.origin.y,
-                self.selectedSegmentIndicator.frame.size.width,
-                self.selectedSegmentIndicator.frame.size.height
-            };
         }
+    } else {
+        [self setSelectedSegmentIndex:index];
     }
 }
 
