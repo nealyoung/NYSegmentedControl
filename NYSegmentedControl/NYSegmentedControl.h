@@ -184,4 +184,6 @@
  */
 - (void)setSelectedSegmentIndex:(NSUInteger)selectedSegmentIndex animated:(BOOL)animated;
 
+- (void)moveSelectedSegmentIndicatorSimultaneouslyToIndex:(CGFloat)index;
+
 @end
