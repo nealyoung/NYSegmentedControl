@@ -434,4 +434,65 @@
     _selectedSegmentIndex = selectedSegmentIndex;
 }
 
+- (void)triggerMultipleSegmentsBeingScrolledToIndex:(CGFloat)index withOffset:(CGFloat)offset {
+    NSInteger direction = index > self.selectedSegmentIndex ? 1 : -1;
+    BOOL didScrolledBackward = direction == -1;
+    BOOL didScrolledFewSegments = ABS(self.selectedSegmentIndex - (NSInteger)index) > 1;
+    
+    if (didScrolledFewSegments) {
+        NSInteger newIndex = self.selectedSegmentIndex = (index - offset);
+        
+        if (didScrolledBackward) {
+            newIndex = (newIndex + 1) * direction;
+        }
+        
+        if (newIndex >= 0 && newIndex < self.segments.count - 1) {
+            _selectedSegmentIndex = newIndex;
+        }
+    }
+}
+
+- (void)moveSelectedSegmentIndicatorToSegmentAtIndex:(NSInteger)clearIndex withOffset:(CGFloat)offset {
+    CGFloat index = clearIndex + offset;
+    
+    if (index > 0 && index < self.segments.count) { // make sure that this code won't work with first and last segments if scrolled out of segments indexes
+        NSInteger direction = index > self.selectedSegmentIndex ? 1 : -1;
+        
+        if (offset == 0) { // if no diff from current position then we should move it to the position
+            [self setSelectedSegmentIndex:index];
+        } else { // when we have dx
+            BOOL didScrolledBackward = direction == -1;
+            BOOL didScrolledFewSegments = ABS(self.selectedSegmentIndex - clearIndex) > 1;
+            
+            [self triggerMultipleSegmentsBeingScrolledToIndex:index withOffset:offset];
+            
+            NSInteger nextSegmentIndex = self.selectedSegmentIndex + direction;
+            
+            if (nextSegmentIndex >= 0 && nextSegmentIndex < self.segments.count) {
+                NYSegment *sourceSegment = self.segments[self.selectedSegmentIndex];
+                NYSegment *destinationSegment = self.segments[self.selectedSegmentIndex + direction];
+                
+                CGFloat distance = ABS(destinationSegment.frame.origin.x - sourceSegment.frame.origin.x);
+                CGFloat distanceToGo = distance * offset;
+                CGFloat startPosition = sourceSegment.frame.origin.x;
+                
+                if (didScrolledBackward && !didScrolledFewSegments) {
+                    startPosition -= sourceSegment.frame.size.width;
+                }
+                
+                self.selectedSegmentIndicator.frame = (CGRect){
+                    startPosition + distanceToGo,
+                    self.selectedSegmentIndicator.frame.origin.y,
+                    self.selectedSegmentIndicator.frame.size.width,
+                    self.selectedSegmentIndicator.frame.size.height
+                };
+            }
+        }
+    } else {
+        [self setSelectedSegmentIndex:index];        
+    }
+}
+
+
+
 @end
