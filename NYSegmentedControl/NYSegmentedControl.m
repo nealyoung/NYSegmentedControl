@@ -13,8 +13,8 @@
 
 @interface NYSegmentedControl ()
 
-@property NSArray *segments;
-@property NYSegmentIndicator *selectedSegmentIndicator;
+@property (copy, nonatomic) NSArray *segments;
+@property (strong, nonatomic) NYSegmentIndicator *selectedSegmentIndicator;
 
 - (void)moveSelectedSegmentIndicatorToSegmentAtIndex:(NSUInteger)index animated:(BOOL)animated;
 - (CGRect)indicatorFrameForSegment:(NYSegment *)segment;
@@ -28,29 +28,29 @@
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
-    
-    if (self) {
-        [self initialize];
-    }
+    self = [self initWithItems:nil segmentIndicatorView:nil];
     
     return self;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    
-    if (self) {
-        [self initialize];
-    }
+    self = [self initWithItems:nil segmentIndicatorView:nil];
     
     return self;
 }
 
 - (instancetype)initWithItems:(NSArray *)items {
-    self = [self initWithFrame:CGRectZero];
+    self = [self initWithItems:items segmentIndicatorView:nil];
+    
+    return self;
+}
+
+- (instancetype)initWithItems:(NSArray *)items segmentIndicatorView:(UIView *)segmentIndicatorView {
+    self = [super initWithFrame:CGRectZero];
     
     if (self) {
+        [self initializeWithSegmentIndicatorView:segmentIndicatorView];
+        
         NSMutableArray *mutableSegments = [NSMutableArray array];
         
         for (NSString *segmentTitle in items) {
@@ -66,7 +66,7 @@
     return self;
 }
 
-- (void)initialize {
+- (void)initializeWithSegmentIndicatorView:(UIView *)segmentIndicatorView {
     // We need to directly access the ivars for UIAppearance properties in the initializer
     _titleFont = [UIFont systemFontOfSize:13.0f];
     _titleTextColor = [UIColor blackColor];
@@ -88,7 +88,11 @@
     self.opaque = NO;
     self.segments = [NSArray array];
     
-    self.selectedSegmentIndicator = [[NYSegmentIndicator alloc] initWithFrame:CGRectZero];
+    if (!segmentIndicatorView) {
+        segmentIndicatorView = [[NYSegmentIndicator alloc] initWithFrame:CGRectZero];
+    }
+    
+    self.selectedSegmentIndicator = (NYSegmentIndicator *)segmentIndicatorView;
     self.drawsSegmentIndicatorGradientBackground = YES;
     [self addSubview:self.selectedSegmentIndicator];
 }
@@ -329,7 +333,9 @@
 
 - (void)setCornerRadius:(CGFloat)cornerRadius {
     self.layer.cornerRadius = cornerRadius;
-    self.selectedSegmentIndicator.cornerRadius = cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(setCornerRadius:)]) {
+        self.selectedSegmentIndicator.cornerRadius = cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
+    }
     [self setNeedsDisplay];
 }
 
@@ -338,16 +344,25 @@
 }
 
 - (void)setDrawsSegmentIndicatorGradientBackground:(BOOL)drawsSegmentIndicatorGradientBackground {
-    self.selectedSegmentIndicator.drawsGradientBackground = drawsSegmentIndicatorGradientBackground;
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(setDrawsGradientBackground:)]) {
+        self.selectedSegmentIndicator.drawsGradientBackground = drawsSegmentIndicatorGradientBackground;
+    }
 }
 
 - (BOOL)drawsSegmentIndicatorGradientBackground {
-    return self.selectedSegmentIndicator.drawsGradientBackground;
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(drawsGradientBackground)]) {
+        return self.selectedSegmentIndicator.drawsGradientBackground;
+    }
+    
+    return NO;
 }
 
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
-    self.selectedSegmentIndicator.cornerRadius = self.cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
+    
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(setCornerRadius:)]) {
+        self.selectedSegmentIndicator.cornerRadius = self.cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
+    }
 }
 
 - (void)setSegmentIndicatorBackgroundColor:(UIColor *)segmentIndicatorBackgroundColor {
@@ -360,40 +375,65 @@
 
 - (void)setSegmentIndicatorInset:(CGFloat)segmentIndicatorInset {
     _segmentIndicatorInset = segmentIndicatorInset;
-    self.selectedSegmentIndicator.cornerRadius = self.cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(setCornerRadius:)]) {
+        self.selectedSegmentIndicator.cornerRadius = self.cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
+    }
     [self setNeedsLayout];
 }
 
 - (void)setSegmentIndicatorGradientTopColor:(UIColor *)segmentIndicatorGradientTopColor {
-    self.selectedSegmentIndicator.gradientTopColor = segmentIndicatorGradientTopColor;
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(setGradientTopColor:)]) {
+        self.selectedSegmentIndicator.gradientTopColor = segmentIndicatorGradientTopColor;
+    }
 }
 
 - (UIColor *)segmentIndicatorGradientTopColor {
-    return self.selectedSegmentIndicator.gradientTopColor;
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(gradientTopColor)]) {
+        return self.selectedSegmentIndicator.gradientTopColor;
+    }
+    
+    return nil;
 }
 
 - (void)setSegmentIndicatorGradientBottomColor:(UIColor *)segmentIndicatorGradientBottomColor {
-    self.selectedSegmentIndicator.gradientBottomColor = segmentIndicatorGradientBottomColor;
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(setGradientBottomColor:)]) {
+        self.selectedSegmentIndicator.gradientBottomColor = segmentIndicatorGradientBottomColor;
+    }
 }
 
 - (UIColor *)segmentIndicatorGradientBottomColor {
-    return self.selectedSegmentIndicator.gradientBottomColor;
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(gradientBottomColor)]) {
+        return self.selectedSegmentIndicator.gradientBottomColor;
+    }
+    
+    return nil;
 }
 
 - (void)setSegmentIndicatorBorderColor:(UIColor *)segmentIndicatorBorderColor {
-    self.selectedSegmentIndicator.borderColor = segmentIndicatorBorderColor;
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(setBorderColor:)]) {
+        self.selectedSegmentIndicator.borderColor = segmentIndicatorBorderColor;
+    }
 }
 
 - (UIColor *)segmentIndicatorBorderColor {
-    return self.selectedSegmentIndicator.borderColor;
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(borderColor)]) {
+        return self.selectedSegmentIndicator.borderColor;
+    }
+    
+    return nil;
 }
 
 - (void)setSegmentIndicatorBorderWidth:(CGFloat)segmentIndicatorBorderWidth {
-    self.selectedSegmentIndicator.borderWidth = segmentIndicatorBorderWidth;
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(setBorderWidth:)]) {
+        self.selectedSegmentIndicator.borderWidth = segmentIndicatorBorderWidth;
+    }
 }
 
 - (CGFloat)segmentIndicatorBorderWidth {
-    return self.selectedSegmentIndicator.borderWidth;
+    if ([self.selectedSegmentIndicator respondsToSelector:@selector(borderWidth)]) {
+        return self.selectedSegmentIndicator.borderWidth;
+    }
+    return 0.f;
 }
 
 - (void)setTitleFont:(UIFont *)titleFont {

@@ -140,6 +140,16 @@
 - (instancetype)initWithItems:(NSArray *)items;
 
 /**
+ Initializes and returns a control with segments having the specified titles with custom selected segment indicator.
+ 
+ @param items An array of NSString objects representing the titles of segments in the control.
+ @param segmentIndicatorView A custom `UIView` to use for selected segment indicator
+ 
+ @return An initialized NYSegmentedControl object, or nil if it could not be created.
+ */
+- (instancetype)initWithItems:(NSArray *)items segmentIndicatorView:(UIView *)segmentIndicatorView;
+
+/**
  Inserts a segment at the specified index.
  
  @param title A string to use as the segment's title.
