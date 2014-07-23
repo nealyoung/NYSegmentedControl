@@ -19,6 +19,7 @@
 		0E3CBE3C18DECF82001EC237 /* NYSegmentedControlDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E3CBE3B18DECF82001EC237 /* NYSegmentedControlDemoTests.m */; };
 		0E3CBE4918DECFAC001EC237 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E3CBE4618DECFAC001EC237 /* AppDelegate.m */; };
 		0E3CBE4A18DECFAC001EC237 /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E3CBE4818DECFAC001EC237 /* DemoViewController.m */; };
+		2A4F2A58197DB1D000ADEB96 /* NYSegmentIndicatorSingleLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A4F2A57197DB1D000ADEB96 /* NYSegmentIndicatorSingleLine.m */; };
 		C53E59451932DA7100087BCD /* NYSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = C53E59401932DA7100087BCD /* NYSegment.m */; };
 		C53E59461932DA7100087BCD /* NYSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = C53E59421932DA7100087BCD /* NYSegmentedControl.m */; };
 		C53E59471932DA7100087BCD /* NYSegmentIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = C53E59441932DA7100087BCD /* NYSegmentIndicator.m */; };
@@ -53,6 +54,8 @@
 		0E3CBE4618DECFAC001EC237 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		0E3CBE4718DECFAC001EC237 /* DemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
 		0E3CBE4818DECFAC001EC237 /* DemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
+		2A4F2A56197DB1D000ADEB96 /* NYSegmentIndicatorSingleLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYSegmentIndicatorSingleLine.h; sourceTree = "<group>"; };
+		2A4F2A57197DB1D000ADEB96 /* NYSegmentIndicatorSingleLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYSegmentIndicatorSingleLine.m; sourceTree = "<group>"; };
 		C53E593F1932DA7100087BCD /* NYSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYSegment.h; sourceTree = "<group>"; };
 		C53E59401932DA7100087BCD /* NYSegment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYSegment.m; sourceTree = "<group>"; };
 		C53E59411932DA7100087BCD /* NYSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYSegmentedControl.h; sourceTree = "<group>"; };
@@ -124,6 +127,8 @@
 				0E3CBE4818DECFAC001EC237 /* DemoViewController.m */,
 				0E3CBE2818DECF82001EC237 /* Images.xcassets */,
 				0E3CBE1718DECF82001EC237 /* Supporting Files */,
+				2A4F2A56197DB1D000ADEB96 /* NYSegmentIndicatorSingleLine.h */,
+				2A4F2A57197DB1D000ADEB96 /* NYSegmentIndicatorSingleLine.m */,
 			);
 			path = NYSegmentedControlDemo;
 			sourceTree = "<group>";
@@ -269,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C53E59451932DA7100087BCD /* NYSegment.m in Sources */,
+				2A4F2A58197DB1D000ADEB96 /* NYSegmentIndicatorSingleLine.m in Sources */,
 				0E3CBE4A18DECFAC001EC237 /* DemoViewController.m in Sources */,
 				C53E59471932DA7100087BCD /* NYSegmentIndicator.m in Sources */,
 				0E3CBE4918DECFAC001EC237 /* AppDelegate.m in Sources */,

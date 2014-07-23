@@ -8,6 +8,7 @@
 
 #import "DemoViewController.h"
 #import "NYSegmentedControl.h"
+#import "NYSegmentIndicatorSingleLine.h"
 
 @interface DemoViewController ()
 
@@ -84,6 +85,22 @@
     foursquareSegmentedControl.center = CGPointMake(lightControlExampleView.center.x, lightControlExampleView.center.y + 30.0f);
     foursquareSegmentedControlBackgroundView.center = foursquareSegmentedControl.center;
     [lightControlExampleView addSubview:foursquareSegmentedControl];
+    
+    NYSegmentIndicatorSingleLine *segmentIndicatorLineView = [[NYSegmentIndicatorSingleLine alloc] initWithFrame:CGRectZero];
+    NYSegmentedControl *plainSegmentedControl = [[NYSegmentedControl alloc] initWithItems:@[@"Left", @"Right"]
+                                                                     segmentIndicatorView:segmentIndicatorLineView];
+    plainSegmentedControl.titleTextColor = [UIColor grayColor];
+    plainSegmentedControl.selectedTitleTextColor = [UIColor redColor];
+    plainSegmentedControl.selectedTitleFont = [UIFont systemFontOfSize:13.0f];
+    plainSegmentedControl.backgroundColor = lightControlExampleView.backgroundColor;
+    plainSegmentedControl.borderWidth = 0.0f;
+    plainSegmentedControl.segmentIndicatorBorderWidth = 0.0f;
+    plainSegmentedControl.segmentIndicatorInset = 1.0f;
+    plainSegmentedControl.cornerRadius = 0.f;
+    plainSegmentedControl.minimumSegmentWidth = 50.f;
+    [plainSegmentedControl sizeToFit];
+    plainSegmentedControl.center = CGPointMake(lightControlExampleView.center.x, lightControlExampleView.center.y + 100.0f);
+    [lightControlExampleView addSubview:plainSegmentedControl];
     
     UIView *darkControlExampleView = [[UIView alloc] initWithFrame:self.view.bounds];
     darkControlExampleView.backgroundColor = [UIColor colorWithWhite:0.2f alpha:1.0f];
