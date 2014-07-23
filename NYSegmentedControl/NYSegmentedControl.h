@@ -130,6 +130,25 @@
  */
 @property (nonatomic) NSUInteger selectedSegmentIndex;
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
+
+/**
+ If `YES`, than used mentod `animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:` for animation
+ */
+@property (nonatomic) BOOL animatateUsingSpring UI_APPEARANCE_SELECTOR;
+
+/**
+ The damping ratio for the spring animation
+ */
+@property (nonatomic) CGFloat springAnimationDampingRatio UI_APPEARANCE_SELECTOR;
+
+/**
+ The initial spring velocity
+ */
+@property (nonatomic) CGFloat springAnimationVelocity UI_APPEARANCE_SELECTOR;
+
+#endif
+
 /**
  Initializes and returns a control with segments having the specified titles.
  

@@ -81,6 +81,9 @@
     foursquareSegmentedControl.segmentIndicatorBorderColor = self.view.backgroundColor;
     [foursquareSegmentedControl sizeToFit];
     foursquareSegmentedControl.cornerRadius = CGRectGetHeight(foursquareSegmentedControl.frame) / 2.0f;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
+    foursquareSegmentedControl.animatateUsingSpring = YES;
+#endif
     foursquareSegmentedControl.center = CGPointMake(lightControlExampleView.center.x, lightControlExampleView.center.y + 30.0f);
     foursquareSegmentedControlBackgroundView.center = foursquareSegmentedControl.center;
     [lightControlExampleView addSubview:foursquareSegmentedControl];

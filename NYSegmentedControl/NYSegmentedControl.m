@@ -77,6 +77,9 @@
     _segmentIndicatorAnimationDuration = 0.15f;
     _gradientTopColor = [UIColor colorWithRed:0.21f green:0.21f blue:0.21f alpha:1.0f];
     _gradientBottomColor = [UIColor colorWithRed:0.16f green:0.16f blue:0.16f alpha:1.0f];
+    _animatateUsingSpring = NO;
+    _springAnimationDampingRatio = 0.6f;
+    _springAnimationVelocity = 0.5f;
     
     self.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     self.layer.masksToBounds = YES;
@@ -201,20 +204,35 @@
     NYSegment *selectedSegment = self.segments[index];
     
     if (animated) {
-        [UIView animateWithDuration:self.segmentIndicatorAnimationDuration
-                         animations:^{
-                             self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
-                         }
-                         completion:^(BOOL finished) {
-                             if (self.stylesTitleForSelectedSegment) {
-                                 selectedSegment.titleLabel.font = self.selectedTitleFont;
-                                 selectedSegment.titleLabel.textColor = self.selectedTitleTextColor;
-                                 
-                                 if (self.drawsSegmentIndicatorGradientBackground) {
-                                     //selectedSegment.titleLabel.shadowColor = [UIColor darkGrayColor];
-                                 }
-                             }
-                         }];
+        void (^animations)(void) = ^{
+            self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
+        };
+        
+        void (^completion)(BOOL finished) = ^(BOOL finished) {
+            if (self.stylesTitleForSelectedSegment) {
+                selectedSegment.titleLabel.font = self.selectedTitleFont;
+                selectedSegment.titleLabel.textColor = self.selectedTitleTextColor;
+                
+                if (self.drawsSegmentIndicatorGradientBackground) {
+                    //selectedSegment.titleLabel.shadowColor = [UIColor darkGrayColor];
+                }
+            }
+        };
+        
+        if (NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_6_1 || !self.animatateUsingSpring) {
+            [UIView animateWithDuration:self.segmentIndicatorAnimationDuration
+                             animations:animations
+                             completion:completion];
+        } else {
+            [UIView animateWithDuration:self.segmentIndicatorAnimationDuration
+                                  delay:0.f
+                 usingSpringWithDamping:self.springAnimationDampingRatio
+                  initialSpringVelocity:self.springAnimationVelocity
+                                options:kNilOptions
+                             animations:animations
+                             completion:completion];
+        }
+        
     } else {
         self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
 
