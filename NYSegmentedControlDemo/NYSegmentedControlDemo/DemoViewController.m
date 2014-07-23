@@ -97,6 +97,7 @@
     plainSegmentedControl.segmentIndicatorBorderWidth = 0.0f;
     plainSegmentedControl.segmentIndicatorInset = 1.0f;
     plainSegmentedControl.cornerRadius = 0.f;
+    plainSegmentedControl.minimumSegmentWidth = 50.f;
     [plainSegmentedControl sizeToFit];
     plainSegmentedControl.center = CGPointMake(lightControlExampleView.center.x, lightControlExampleView.center.y + 100.0f);
     [lightControlExampleView addSubview:plainSegmentedControl];

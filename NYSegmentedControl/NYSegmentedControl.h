@@ -131,6 +131,11 @@
 @property (nonatomic) NSUInteger selectedSegmentIndex;
 
 /**
+ The width of the selected segment indicator's border
+ */
+@property (nonatomic) CGFloat minimumSegmentWidth UI_APPEARANCE_SELECTOR;
+
+/**
  Initializes and returns a control with segments having the specified titles.
  
  @param items An array of NSString objects representing the titles of segments in the control.

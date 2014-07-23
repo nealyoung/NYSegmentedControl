@@ -77,6 +77,7 @@
     _segmentIndicatorAnimationDuration = 0.15f;
     _gradientTopColor = [UIColor colorWithRed:0.21f green:0.21f blue:0.21f alpha:1.0f];
     _gradientBottomColor = [UIColor colorWithRed:0.16f green:0.16f blue:0.16f alpha:1.0f];
+    _minimumSegmentWidth = 68.f;
     
     self.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     self.layer.masksToBounds = YES;
@@ -101,7 +102,7 @@
     CGFloat maxSegmentWidth = 0.0f;
     
     for (NYSegment *segment in self.segments) {
-        CGFloat segmentWidth = [segment sizeThatFits:size].width;
+        CGFloat segmentWidth = MAX([segment sizeThatFits:size].width, self.minimumSegmentWidth);
         if (segmentWidth > maxSegmentWidth) {
             maxSegmentWidth = segmentWidth;
         }

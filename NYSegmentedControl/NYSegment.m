@@ -9,8 +9,6 @@
 
 #import "NYSegment.h"
 
-static CGFloat const kMinimumSegmentWidth = 68.0f;
-
 @implementation NYSegment
 
 - (instancetype)initWithTitle:(NSString *)title {
@@ -37,7 +35,7 @@ static CGFloat const kMinimumSegmentWidth = 68.0f;
 
 - (CGSize)sizeThatFits:(CGSize)size {
     CGSize sizeThatFits = [self.titleLabel sizeThatFits:size];
-    return CGSizeMake(MAX(sizeThatFits.width * 1.4f, kMinimumSegmentWidth), sizeThatFits.height);
+    return CGSizeMake(sizeThatFits.width * 1.4f, sizeThatFits.height);
 }
 
 @end
