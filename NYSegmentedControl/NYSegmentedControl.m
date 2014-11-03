@@ -83,7 +83,6 @@
     self.layer.cornerRadius = 4.0f;
     self.layer.borderWidth = 1.0f;
     
-    self.backgroundColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
     self.drawsGradientBackground = NO;
     self.opaque = NO;
     self.segments = [NSArray array];
