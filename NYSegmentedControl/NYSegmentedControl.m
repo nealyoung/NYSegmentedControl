@@ -129,6 +129,7 @@
     }
 
     self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:self.segments[self.selectedSegmentIndex]];
+    [self setCornerRadius:[self cornerRadius]];
 }
 
 - (void)drawRect:(CGRect)rect {
