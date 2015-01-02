@@ -91,6 +91,15 @@
     self.selectedSegmentIndicator = [[NYSegmentIndicator alloc] initWithFrame:CGRectZero];
     self.drawsSegmentIndicatorGradientBackground = YES;
     [self addSubview:self.selectedSegmentIndicator];
+
+    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanGestureRecognizer:)];
+    [panGestureRecognizer setMinimumNumberOfTouches:1];
+    [panGestureRecognizer setMaximumNumberOfTouches:1];
+    [self.selectedSegmentIndicator addGestureRecognizer:panGestureRecognizer];
+
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapGestureRecognizer:)];
+    tapGestureRecognizer.numberOfTapsRequired = 1;
+    [self addGestureRecognizer:tapGestureRecognizer];
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
@@ -227,26 +236,9 @@
 
 #pragma mark - Touch Tracking
 
-- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    // If the user is touching the slider, start tracking the drag. Otherwise, select the segement that was tapped
-    if (CGRectContainsPoint(self.selectedSegmentIndicator.bounds, [touch locationInView:self.selectedSegmentIndicator])) {
-        return YES;
-    } else {
-        // Otherwise, find the segment that the user touched, and select it
-        [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
-            if (CGRectContainsPoint(segment.frame, [touch locationInView:self])) {
-                if (index != self.selectedSegmentIndex) {
-                    [self setSelectedSegmentIndex:index animated:YES];
-                    [self sendActionsForControlEvents:UIControlEventValueChanged];
-                }
-            }
-        }];
-    }
-    
-    return NO;
-}
+- (void)didPanGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer {
+    CGPoint translation = [panGestureRecognizer translationInView:panGestureRecognizer.view.superview];
 
-- (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     if (self.stylesTitleForSelectedSegment) {
         // Style the segment the center of the indicator is covering
         [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
@@ -259,29 +251,40 @@
             }
         }];
     }
-    
+
     // Find the difference in horizontal position between the current and previous touches
-    CGFloat xDiff = [touch locationInView:self.selectedSegmentIndicator].x - [touch previousLocationInView:self.selectedSegmentIndicator].x;
-    
+    CGFloat xDiff = translation.x;
+
     // Check that the indicator doesn't exit the bounds of the control
     CGRect newSegmentIndicatorFrame = self.selectedSegmentIndicator.frame;
     newSegmentIndicatorFrame.origin.x += xDiff;
-    
+
     if (CGRectContainsRect(CGRectInset(self.bounds, self.segmentIndicatorInset, 0), newSegmentIndicatorFrame)) {
         self.selectedSegmentIndicator.center = CGPointMake(self.selectedSegmentIndicator.center.x + xDiff, self.selectedSegmentIndicator.center.y);
     }
-    
-    return YES;
+
+    [panGestureRecognizer setTranslation:CGPointMake(0, 0) inView:panGestureRecognizer.view.superview];
+
+    if (panGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
+            if (CGRectContainsPoint(segment.frame, self.selectedSegmentIndicator.center)) {
+                [self moveSelectedSegmentIndicatorToSegmentAtIndex:index animated:YES];
+
+                if (index != self.selectedSegmentIndex) {
+                    _selectedSegmentIndex = index;
+                    [self sendActionsForControlEvents:UIControlEventValueChanged];
+                }
+            }
+        }];
+    }
 }
 
-- (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    // Select the segment containing the indicator's center
+- (void)didTapGestureRecognizer:(UITapGestureRecognizer *)tapGestureRecognizer {
+    CGPoint location = [tapGestureRecognizer locationInView:self];
     [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
-        if (CGRectContainsPoint(segment.frame, self.selectedSegmentIndicator.center)) {
-            [self moveSelectedSegmentIndicatorToSegmentAtIndex:index animated:YES];
-            
+        if (CGRectContainsPoint(segment.frame, location)) {
             if (index != self.selectedSegmentIndex) {
-                _selectedSegmentIndex = index;
+                [self setSelectedSegmentIndex:index animated:YES];
                 [self sendActionsForControlEvents:UIControlEventValueChanged];
             }
         }
