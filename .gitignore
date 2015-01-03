@@ -15,4 +15,4 @@ profile
 DerivedData
 *.hmap
 *.ipa
-
+.idea/
