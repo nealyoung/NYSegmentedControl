@@ -8,6 +8,7 @@
 //
 
 #import "NYSegment.h"
+#import "NYSegmentLabel.h"
 
 static CGFloat const kMinimumSegmentWidth = 68.0f;
 
@@ -25,7 +26,7 @@ static CGFloat const kMinimumSegmentWidth = 68.0f;
     self = [super initWithFrame:frame];
     if (self) {
         self.userInteractionEnabled = NO;
-        self.titleLabel = [[UILabel alloc] initWithFrame:self.frame];
+        self.titleLabel = [[NYSegmentLabel alloc] initWithFrame:self.frame];
         self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.titleLabel.font = [UIFont systemFontOfSize:13.0f];
         self.titleLabel.textAlignment = NSTextAlignmentCenter;

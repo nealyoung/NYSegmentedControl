@@ -10,6 +10,7 @@
 #import "NYSegmentedControl.h"
 #import "NYSegment.h"
 #import "NYSegmentIndicator.h"
+#import "NYSegmentLabel.h"
 
 @interface NYSegmentedControl ()
 
@@ -55,6 +56,7 @@
         
         for (NSString *segmentTitle in items) {
             NYSegment *segment = [[NYSegment alloc] initWithTitle:segmentTitle];
+            segment.titleLabel.maskCornerRadius = self.cornerRadius;
             [self addSubview:segment];
             [mutableSegments addObject:segment];
         }
@@ -127,12 +129,19 @@
     for (int i = 0; i < [self.segments count]; i++) {
         NYSegment *segment = self.segments[i];
         segment.frame = CGRectMake(segmentWidth * i, 0.0f, segmentWidth, segmentHeight);
-        
-        if (self.stylesTitleForSelectedSegment && self.selectedSegmentIndex == i) {
-            segment.titleLabel.font = self.selectedTitleFont;
-            segment.titleLabel.textColor = self.selectedTitleTextColor;
+
+        if (self.stylesTitleForSelectedSegment) {
+            if (self.selectedSegmentIndex == i) {
+                segment.titleLabel.font = self.selectedTitleFont;
+                segment.titleLabel.maskFrame = segment.titleLabel.bounds;
+            } else {
+                segment.titleLabel.font = self.titleFont;
+            }
+
+            segment.titleLabel.alternativeTextColor = self.selectedTitleTextColor;
+            segment.titleLabel.textColor = self.titleTextColor;
         } else {
-            segment.titleLabel.font = self.titleFont; 
+            segment.titleLabel.font = self.titleFont;
             segment.titleLabel.textColor = self.titleTextColor;
         }
     }
@@ -156,6 +165,7 @@
     }
     
     NYSegment *newSegment = [[NYSegment alloc] initWithTitle:title];
+    newSegment.titleLabel.maskCornerRadius = self.cornerRadius;
     [self addSubview:newSegment];
     
     NSMutableArray *mutableSegments = [NSMutableArray arrayWithArray:self.segments];
@@ -204,7 +214,7 @@
     if (index != self.selectedSegmentIndex) {
         NYSegment *previousSegment = self.segments[self.selectedSegmentIndex];
         previousSegment.titleLabel.font = self.titleFont;
-        previousSegment.titleLabel.textColor = self.titleTextColor;
+        previousSegment.titleLabel.maskFrame = CGRectZero;
     }
     
     NYSegment *selectedSegment = self.segments[index];
@@ -213,12 +223,19 @@
         [UIView animateWithDuration:self.segmentIndicatorAnimationDuration
                          animations:^{
                              self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
+
+                             if (self.stylesTitleForSelectedSegment) {
+                                 [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
+                                     segment.titleLabel.maskFrame = CGRectZero;
+                                 }];
+
+                                 selectedSegment.titleLabel.maskFrame = selectedSegment.titleLabel.bounds;
+                             }
                          }
                          completion:^(BOOL finished) {
                              if (self.stylesTitleForSelectedSegment) {
                                  selectedSegment.titleLabel.font = self.selectedTitleFont;
-                                 selectedSegment.titleLabel.textColor = self.selectedTitleTextColor;
-                                 
+
                                  if (self.drawsSegmentIndicatorGradientBackground) {
                                      //selectedSegment.titleLabel.shadowColor = [UIColor darkGrayColor];
                                  }
@@ -229,7 +246,7 @@
 
         if (self.stylesTitleForSelectedSegment) {
             selectedSegment.titleLabel.font = self.selectedTitleFont;
-            selectedSegment.titleLabel.textColor = self.selectedTitleTextColor;
+            selectedSegment.titleLabel.maskFrame = selectedSegment.titleLabel.bounds;
         }
     }
 }
@@ -244,11 +261,15 @@
         [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
             if (CGRectContainsPoint(segment.frame, self.selectedSegmentIndicator.center)) {
                 segment.titleLabel.font = self.selectedTitleFont;
-                segment.titleLabel.textColor = self.selectedTitleTextColor;
             } else {
                 segment.titleLabel.font = self.titleFont;
-                segment.titleLabel.textColor = self.titleTextColor;
             }
+
+            CGRect segmentFrame = segment.frame;
+            CGRect intersection = CGRectIntersection(segmentFrame, self.selectedSegmentIndicator.frame);
+            CGAffineTransform transform = CGAffineTransformMakeTranslation(-CGRectGetMinX(segmentFrame), -CGRectGetMinY(segmentFrame));
+            CGRect maskFrame = CGRectApplyAffineTransform(intersection, transform);
+            segment.titleLabel.maskFrame = maskFrame;
         }];
     }
 
@@ -331,6 +352,10 @@
 }
 
 - (void)setCornerRadius:(CGFloat)cornerRadius {
+    for (NYSegment *segment in self.segments) {
+        segment.titleLabel.maskCornerRadius = cornerRadius;
+    }
+
     self.layer.cornerRadius = cornerRadius;
     self.selectedSegmentIndicator.cornerRadius = cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
     [self setNeedsDisplay];

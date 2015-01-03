@@ -10,10 +10,11 @@
 #import <UIKit/UIKit.h>
 
 @class NYSegment;
+@class NYSegmentLabel;
 
 @interface NYSegment : UIView
 
-@property (nonatomic) UILabel *titleLabel;
+@property (nonatomic) NYSegmentLabel *titleLabel;
 
 - (instancetype)initWithTitle:(NSString *)title;
 
