@@ -16,6 +16,7 @@
 
 @property NSArray *segments;
 @property NYSegmentIndicator *selectedSegmentIndicator;
+@property (nonatomic, getter=isAnimating) BOOL animating;
 
 - (void)moveSelectedSegmentIndicatorToSegmentAtIndex:(NSUInteger)index animated:(BOOL)animated;
 - (CGRect)indicatorFrameForSegment:(NYSegment *)segment;
@@ -220,6 +221,7 @@
     NYSegment *selectedSegment = self.segments[index];
     
     if (animated) {
+        self.animating = YES;
         [UIView animateWithDuration:self.segmentIndicatorAnimationDuration
                          animations:^{
                              self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
@@ -240,6 +242,7 @@
                                      //selectedSegment.titleLabel.shadowColor = [UIColor darkGrayColor];
                                  }
                              }
+                             self.animating = NO;
                          }];
     } else {
         self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
