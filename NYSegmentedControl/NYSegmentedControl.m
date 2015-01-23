@@ -15,6 +15,7 @@
 
 @property NSArray *segments;
 @property NYSegmentIndicator *selectedSegmentIndicator;
+@property (nonatomic, getter=isAnimating) BOOL animating;
 
 - (void)moveSelectedSegmentIndicatorToSegmentAtIndex:(NSUInteger)index animated:(BOOL)animated;
 - (CGRect)indicatorFrameForSegment:(NYSegment *)segment;
@@ -201,6 +202,7 @@
     NYSegment *selectedSegment = self.segments[index];
     
     if (animated) {
+        self.animating = YES;
         [UIView animateWithDuration:self.segmentIndicatorAnimationDuration
                          animations:^{
                              self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
@@ -214,6 +216,7 @@
                                      //selectedSegment.titleLabel.shadowColor = [UIColor darkGrayColor];
                                  }
                              }
+                             self.animating = NO;
                          }];
     } else {
         self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
@@ -228,6 +231,10 @@
 #pragma mark - Touch Tracking
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    if (self.isAnimating) {
+        return NO;
+    }
+
     // If the user is touching the slider, start tracking the drag. Otherwise, select the segement that was tapped
     if (CGRectContainsPoint(self.selectedSegmentIndicator.bounds, [touch locationInView:self.selectedSegmentIndicator])) {
         return YES;
