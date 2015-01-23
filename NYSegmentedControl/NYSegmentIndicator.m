@@ -19,7 +19,6 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.layer.masksToBounds = YES;
-        self.userInteractionEnabled = NO;
         self.drawsGradientBackground = NO;
         self.opaque = NO;
         self.cornerRadius = 4.0f;

@@ -10,6 +10,7 @@
 #import "NYSegmentedControl.h"
 #import "NYSegment.h"
 #import "NYSegmentIndicator.h"
+#import "NYSegmentLabel.h"
 
 @interface NYSegmentedControl ()
 
@@ -55,6 +56,7 @@
         
         for (NSString *segmentTitle in items) {
             NYSegment *segment = [[NYSegment alloc] initWithTitle:segmentTitle];
+            segment.titleLabel.maskCornerRadius = self.cornerRadius;
             [self addSubview:segment];
             [mutableSegments addObject:segment];
         }
@@ -91,6 +93,15 @@
     self.selectedSegmentIndicator = [[NYSegmentIndicator alloc] initWithFrame:CGRectZero];
     self.drawsSegmentIndicatorGradientBackground = YES;
     [self addSubview:self.selectedSegmentIndicator];
+
+    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanGestureRecognizer:)];
+    [panGestureRecognizer setMinimumNumberOfTouches:1];
+    [panGestureRecognizer setMaximumNumberOfTouches:1];
+    [self.selectedSegmentIndicator addGestureRecognizer:panGestureRecognizer];
+
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapGestureRecognizer:)];
+    tapGestureRecognizer.numberOfTapsRequired = 1;
+    [self addGestureRecognizer:tapGestureRecognizer];
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
@@ -118,12 +129,19 @@
     for (int i = 0; i < [self.segments count]; i++) {
         NYSegment *segment = self.segments[i];
         segment.frame = CGRectMake(segmentWidth * i, 0.0f, segmentWidth, segmentHeight);
-        
-        if (self.stylesTitleForSelectedSegment && self.selectedSegmentIndex == i) {
-            segment.titleLabel.font = self.selectedTitleFont;
-            segment.titleLabel.textColor = self.selectedTitleTextColor;
+
+        if (self.stylesTitleForSelectedSegment) {
+            if (self.selectedSegmentIndex == i) {
+                segment.titleLabel.font = self.selectedTitleFont;
+                segment.titleLabel.maskFrame = segment.titleLabel.bounds;
+            } else {
+                segment.titleLabel.font = self.titleFont;
+            }
+
+            segment.titleLabel.alternativeTextColor = self.selectedTitleTextColor;
+            segment.titleLabel.textColor = self.titleTextColor;
         } else {
-            segment.titleLabel.font = self.titleFont; 
+            segment.titleLabel.font = self.titleFont;
             segment.titleLabel.textColor = self.titleTextColor;
         }
     }
@@ -147,6 +165,7 @@
     }
     
     NYSegment *newSegment = [[NYSegment alloc] initWithTitle:title];
+    newSegment.titleLabel.maskCornerRadius = self.cornerRadius;
     [self addSubview:newSegment];
     
     NSMutableArray *mutableSegments = [NSMutableArray arrayWithArray:self.segments];
@@ -195,7 +214,7 @@
     if (index != self.selectedSegmentIndex) {
         NYSegment *previousSegment = self.segments[self.selectedSegmentIndex];
         previousSegment.titleLabel.font = self.titleFont;
-        previousSegment.titleLabel.textColor = self.titleTextColor;
+        previousSegment.titleLabel.maskFrame = CGRectZero;
     }
     
     NYSegment *selectedSegment = self.segments[index];
@@ -204,12 +223,19 @@
         [UIView animateWithDuration:self.segmentIndicatorAnimationDuration
                          animations:^{
                              self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
+
+                             if (self.stylesTitleForSelectedSegment) {
+                                 [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
+                                     segment.titleLabel.maskFrame = CGRectZero;
+                                 }];
+
+                                 selectedSegment.titleLabel.maskFrame = selectedSegment.titleLabel.bounds;
+                             }
                          }
                          completion:^(BOOL finished) {
                              if (self.stylesTitleForSelectedSegment) {
                                  selectedSegment.titleLabel.font = self.selectedTitleFont;
-                                 selectedSegment.titleLabel.textColor = self.selectedTitleTextColor;
-                                 
+
                                  if (self.drawsSegmentIndicatorGradientBackground) {
                                      //selectedSegment.titleLabel.shadowColor = [UIColor darkGrayColor];
                                  }
@@ -220,68 +246,66 @@
 
         if (self.stylesTitleForSelectedSegment) {
             selectedSegment.titleLabel.font = self.selectedTitleFont;
-            selectedSegment.titleLabel.textColor = self.selectedTitleTextColor;
+            selectedSegment.titleLabel.maskFrame = selectedSegment.titleLabel.bounds;
         }
     }
 }
 
 #pragma mark - Touch Tracking
 
-- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    // If the user is touching the slider, start tracking the drag. Otherwise, select the segement that was tapped
-    if (CGRectContainsPoint(self.selectedSegmentIndicator.bounds, [touch locationInView:self.selectedSegmentIndicator])) {
-        return YES;
-    } else {
-        // Otherwise, find the segment that the user touched, and select it
-        [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
-            if (CGRectContainsPoint(segment.frame, [touch locationInView:self])) {
-                if (index != self.selectedSegmentIndex) {
-                    [self setSelectedSegmentIndex:index animated:YES];
-                    [self sendActionsForControlEvents:UIControlEventValueChanged];
-                }
-            }
-        }];
-    }
-    
-    return NO;
-}
+- (void)didPanGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer {
+    CGPoint translation = [panGestureRecognizer translationInView:panGestureRecognizer.view.superview];
 
-- (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     if (self.stylesTitleForSelectedSegment) {
         // Style the segment the center of the indicator is covering
         [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
             if (CGRectContainsPoint(segment.frame, self.selectedSegmentIndicator.center)) {
                 segment.titleLabel.font = self.selectedTitleFont;
-                segment.titleLabel.textColor = self.selectedTitleTextColor;
             } else {
                 segment.titleLabel.font = self.titleFont;
-                segment.titleLabel.textColor = self.titleTextColor;
             }
+
+            CGRect segmentFrame = segment.frame;
+            CGRect intersection = CGRectIntersection(segmentFrame, self.selectedSegmentIndicator.frame);
+            CGAffineTransform transform = CGAffineTransformMakeTranslation(-CGRectGetMinX(segmentFrame), -CGRectGetMinY(segmentFrame));
+            CGRect maskFrame = CGRectApplyAffineTransform(intersection, transform);
+            segment.titleLabel.maskFrame = maskFrame;
         }];
     }
-    
+
     // Find the difference in horizontal position between the current and previous touches
-    CGFloat xDiff = [touch locationInView:self.selectedSegmentIndicator].x - [touch previousLocationInView:self.selectedSegmentIndicator].x;
-    
+    CGFloat xDiff = translation.x;
+
     // Check that the indicator doesn't exit the bounds of the control
     CGRect newSegmentIndicatorFrame = self.selectedSegmentIndicator.frame;
     newSegmentIndicatorFrame.origin.x += xDiff;
-    
+
     if (CGRectContainsRect(CGRectInset(self.bounds, self.segmentIndicatorInset, 0), newSegmentIndicatorFrame)) {
         self.selectedSegmentIndicator.center = CGPointMake(self.selectedSegmentIndicator.center.x + xDiff, self.selectedSegmentIndicator.center.y);
     }
-    
-    return YES;
+
+    [panGestureRecognizer setTranslation:CGPointMake(0, 0) inView:panGestureRecognizer.view.superview];
+
+    if (panGestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
+            if (CGRectContainsPoint(segment.frame, self.selectedSegmentIndicator.center)) {
+                [self moveSelectedSegmentIndicatorToSegmentAtIndex:index animated:YES];
+
+                if (index != self.selectedSegmentIndex) {
+                    _selectedSegmentIndex = index;
+                    [self sendActionsForControlEvents:UIControlEventValueChanged];
+                }
+            }
+        }];
+    }
 }
 
-- (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    // Select the segment containing the indicator's center
+- (void)didTapGestureRecognizer:(UITapGestureRecognizer *)tapGestureRecognizer {
+    CGPoint location = [tapGestureRecognizer locationInView:self];
     [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
-        if (CGRectContainsPoint(segment.frame, self.selectedSegmentIndicator.center)) {
-            [self moveSelectedSegmentIndicatorToSegmentAtIndex:index animated:YES];
-            
+        if (CGRectContainsPoint(segment.frame, location)) {
             if (index != self.selectedSegmentIndex) {
-                _selectedSegmentIndex = index;
+                [self setSelectedSegmentIndex:index animated:YES];
                 [self sendActionsForControlEvents:UIControlEventValueChanged];
             }
         }
@@ -328,6 +352,10 @@
 }
 
 - (void)setCornerRadius:(CGFloat)cornerRadius {
+    for (NYSegment *segment in self.segments) {
+        segment.titleLabel.maskCornerRadius = cornerRadius;
+    }
+
     self.layer.cornerRadius = cornerRadius;
     self.selectedSegmentIndicator.cornerRadius = cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
     [self setNeedsDisplay];
