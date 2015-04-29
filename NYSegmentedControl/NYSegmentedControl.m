@@ -137,7 +137,7 @@
     for (int i = 0; i < [self.segments count]; i++) {
         NYSegment *segment = self.segments[i];
         segment.frame = CGRectMake(segmentWidth * i, 0.0f, segmentWidth, segmentHeight);
-        NSLog(@"Laying out subviews");
+        
         if (self.stylesTitleForSelectedSegment) {
             if (self.selectedSegmentIndex == i) {
                 segment.titleLabel.font = self.selectedTitleFont;
