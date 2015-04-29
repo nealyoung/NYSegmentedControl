@@ -9,7 +9,6 @@
 
 #import <Foundation/Foundation.h>
 
-
 @interface NYSegmentLabel : UILabel
 
 @property (nonatomic, strong) UIColor *alternativeTextColor;

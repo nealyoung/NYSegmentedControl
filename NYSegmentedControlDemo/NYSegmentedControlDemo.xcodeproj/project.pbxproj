@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E0A20AE1AF19FC3003855D5 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0E0A20AD1AF19FC3003855D5 /* Launch Screen.xib */; };
 		0E3CBE1118DECF82001EC237 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E3CBE1018DECF82001EC237 /* Foundation.framework */; };
 		0E3CBE1518DECF82001EC237 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E3CBE1418DECF82001EC237 /* UIKit.framework */; };
 		0E3CBE1B18DECF82001EC237 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0E3CBE1918DECF82001EC237 /* InfoPlist.strings */; };
@@ -36,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0E0A20AD1AF19FC3003855D5 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		0E3CBE0D18DECF82001EC237 /* NYSegmentedControlDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NYSegmentedControlDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0E3CBE1018DECF82001EC237 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0E3CBE1218DECF82001EC237 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -134,6 +136,7 @@
 		0E3CBE1718DECF82001EC237 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0E0A20AD1AF19FC3003855D5 /* Launch Screen.xib */,
 				0E3CBE1818DECF82001EC237 /* NYSegmentedControlDemo-Info.plist */,
 				0E3CBE1918DECF82001EC237 /* InfoPlist.strings */,
 				0E3CBE1C18DECF82001EC237 /* main.m */,
@@ -163,14 +166,14 @@
 		C53E593E1932DA7100087BCD /* NYSegmentedControl */ = {
 			isa = PBXGroup;
 			children = (
-				659F28C9E7C2C16F3C90C066 /* NYSegmentIndicator.m */,
-				659F2E2AD1CACF14B488DE0F /* NYSegmentLabel.m */,
-				659F26883AD0F08EA44F6774 /* NYSegment.m */,
-				659F2E554A1A4D16DA1FA816 /* NYSegment.h */,
-				659F255C114426B98D821354 /* NYSegmentLabel.h */,
-				659F2880C9CF8CACC71FACF6 /* NYSegmentedControl.m */,
 				659F243FA0BCD42CEFAAE8E2 /* NYSegmentedControl.h */,
+				659F2880C9CF8CACC71FACF6 /* NYSegmentedControl.m */,
 				659F29086DDA90B516DACA22 /* NYSegmentIndicator.h */,
+				659F28C9E7C2C16F3C90C066 /* NYSegmentIndicator.m */,
+				659F255C114426B98D821354 /* NYSegmentLabel.h */,
+				659F2E2AD1CACF14B488DE0F /* NYSegmentLabel.m */,
+				659F2E554A1A4D16DA1FA816 /* NYSegment.h */,
+				659F26883AD0F08EA44F6774 /* NYSegment.m */,
 			);
 			name = NYSegmentedControl;
 			path = ../../NYSegmentedControl;
@@ -255,6 +258,7 @@
 			files = (
 				0E3CBE2918DECF82001EC237 /* Images.xcassets in Resources */,
 				0E3CBE1B18DECF82001EC237 /* InfoPlist.strings in Resources */,
+				0E0A20AE1AF19FC3003855D5 /* Launch Screen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
