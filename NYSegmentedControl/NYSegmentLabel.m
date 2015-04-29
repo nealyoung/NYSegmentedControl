@@ -7,11 +7,9 @@
 //  https://github.com/nealyoung/NYSegmentedControl
 //
 
-
 #import "NYSegmentLabel.h"
 
-@implementation NYSegmentLabel {
-}
+@implementation NYSegmentLabel
 
 - (void)setMaskFrame:(CGRect)maskFrame {
     _maskFrame = maskFrame;
@@ -25,8 +23,7 @@
     [self setNeedsDisplay];
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
 
     // Draw text normally
@@ -61,11 +58,11 @@
     }
 }
 
-- (CGPathRef)pathForRoundedRect:(CGRect)rect radius:(CGFloat)radius
-{
+- (CGPathRef)pathForRoundedRect:(CGRect)rect radius:(CGFloat)radius {
     if (CGRectIsEmpty(rect)) {
         return CGPathCreateMutable();
     }
+    
     UIBezierPath* path = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius];
     return [path CGPath];
 }
@@ -74,6 +71,7 @@
     if (!_alternativeTextColor) {
         _alternativeTextColor = self.textColor;
     }
+    
     return _alternativeTextColor;
 }
 
