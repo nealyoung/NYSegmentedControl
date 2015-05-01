@@ -9,7 +9,26 @@
 
 #import <UIKit/UIKit.h>
 
+@class NYSegmentedControl;
+
+@protocol NYSegmentedControlDataSource <NSObject>
+
+- (NSUInteger) numberOfSegmentsOfControl:(NYSegmentedControl *)control;
+- (NSString *) segmentedControl:(NYSegmentedControl *)control titleAtIndex:(NSInteger)index;
+
+@end
+
 @interface NYSegmentedControl : UIControl
+
+/**
+ Data source of segment items
+ */
+@property (weak) IBOutlet id <NYSegmentedControlDataSource> dataSource;
+
+/**
+ Reload items data if dataSource is defined
+ */
+- (void) reloadData;
 
 /**
  If YES, selectedTitleFont and SelectedTitleTextColor are used for the selected segment's title label. The default value is YES.

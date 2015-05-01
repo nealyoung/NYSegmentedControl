@@ -14,7 +14,7 @@
 
 @interface NYSegmentedControl ()
 
-@property NSArray *segments;
+@property (nonatomic) NSArray *segments;
 @property NYSegmentIndicator *selectedSegmentIndicator;
 @property (nonatomic, getter=isAnimating) BOOL animating;
 
@@ -96,7 +96,6 @@
     self.backgroundColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
     self.drawsGradientBackground = NO;
     self.opaque = NO;
-    self.segments = [NSArray array];
     
     self.selectedSegmentIndicator = [[NYSegmentIndicator alloc] initWithFrame:CGRectZero];
     self.drawsSegmentIndicatorGradientBackground = YES;
@@ -110,6 +109,38 @@
     UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognized:)];
     tapGestureRecognizer.numberOfTapsRequired = 1;
     [self addGestureRecognizer:tapGestureRecognizer];
+}
+
+- (void) reloadData {
+    if (self.dataSource) {
+        for (NYSegment *segment in self.segments) {
+            [segment removeFromSuperview];
+        }
+        self.segments = [self buildSegmentsFromDataSource];
+    }
+}
+
+- (NSArray *) buildSegmentsFromDataSource {
+    if (self.dataSource) {
+        NSUInteger numberOfSegments = [self.dataSource numberOfSegmentsOfControl:self];
+        NSMutableArray *segmentsArray = [NSMutableArray arrayWithCapacity:numberOfSegments];
+        for (int i = 0; i < numberOfSegments; i++) {
+            NSString *title = [self.dataSource segmentedControl:self titleAtIndex:i];
+            NYSegment *segment = [[NYSegment alloc] initWithTitle:title];
+            [self addSubview:segment];
+            [segmentsArray addObject:segment];
+        }
+        return [segmentsArray copy];
+    }
+    return nil;
+}
+
+- (NSArray *)segments
+{
+    if (!_segments) {
+        _segments = [self buildSegmentsFromDataSource];
+    }
+    return _segments;
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
