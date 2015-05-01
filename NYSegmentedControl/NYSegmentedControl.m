@@ -111,7 +111,7 @@
     [self addGestureRecognizer:tapGestureRecognizer];
 }
 
-- (void) reloadData {
+- (void)reloadData {
     if (self.dataSource) {
         for (NYSegment *segment in self.segments) {
             [segment removeFromSuperview];
@@ -120,26 +120,29 @@
     }
 }
 
-- (NSArray *) buildSegmentsFromDataSource {
+- (NSArray *)buildSegmentsFromDataSource {
     if (self.dataSource) {
         NSUInteger numberOfSegments = [self.dataSource numberOfSegmentsOfControl:self];
         NSMutableArray *segmentsArray = [NSMutableArray arrayWithCapacity:numberOfSegments];
+        
         for (int i = 0; i < numberOfSegments; i++) {
             NSString *title = [self.dataSource segmentedControl:self titleAtIndex:i];
             NYSegment *segment = [[NYSegment alloc] initWithTitle:title];
             [self addSubview:segment];
             [segmentsArray addObject:segment];
         }
+        
         return [segmentsArray copy];
+    } else {
+        return nil;
     }
-    return nil;
 }
 
-- (NSArray *)segments
-{
+- (NSArray *)segments {
     if (!_segments) {
         _segments = [self buildSegmentsFromDataSource];
     }
+    
     return _segments;
 }
 
