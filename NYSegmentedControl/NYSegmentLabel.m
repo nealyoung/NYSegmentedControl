@@ -36,7 +36,7 @@
         mask = CGBitmapContextCreateImage(context);
 
         CGContextSaveGState(context);
-        CGContextTranslateCTM(context, 0, rect.size.height);
+        CGContextTranslateCTM(context, 0, self.frame.size.height);
         CGContextScaleCTM(context, 1.0, (CGFloat) -1.0);
 
         // Clip the current context to our mask
