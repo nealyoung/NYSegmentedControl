@@ -263,7 +263,6 @@
                            options:UIViewAnimationOptionTransitionCrossDissolve
                         animations:^{
                             previousSegment.titleLabel.font = self.titleFont;
-                            previousSegment.titleLabel.textColor = self.titleTextColor;
                             previousSegment.titleLabel.maskFrame = CGRectZero;
                         }
                         completion:nil];
@@ -273,7 +272,6 @@
                            options:UIViewAnimationOptionTransitionCrossDissolve
                         animations:^{
                             selectedSegment.titleLabel.font = self.selectedTitleFont;
-                            selectedSegment.titleLabel.textColor = self.selectedTitleTextColor;
                             
                             if (self.drawsSegmentIndicatorGradientBackground) {
                                 //selectedSegment.titleLabel.shadowColor = [UIColor darkGrayColor];
