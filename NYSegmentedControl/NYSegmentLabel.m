@@ -48,7 +48,7 @@
         // Path from mask
         CGPathRef path;
         
-        if (CGRectIsEmpty(rect)) {
+        if (CGRectIsEmpty(self.maskFrame)) {
             path = CGPathCreateMutable();
         } else {
             UIBezierPath *roundRectBezierPath = [UIBezierPath bezierPathWithRoundedRect:self.maskFrame
