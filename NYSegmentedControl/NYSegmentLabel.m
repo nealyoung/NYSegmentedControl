@@ -35,6 +35,9 @@
         // Create a mask from the text
         mask = CGBitmapContextCreateImage(context);
 
+        CGContextSetShadowWithColor (context, CGSizeMake(3, 3), 5, [UIColor blackColor].CGColor);// 11
+
+        
         CGContextSaveGState(context);
         CGContextTranslateCTM(context, 0, self.frame.size.height);
         CGContextScaleCTM(context, 1.0, (CGFloat) -1.0);

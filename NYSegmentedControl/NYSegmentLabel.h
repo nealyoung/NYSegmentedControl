@@ -7,6 +7,7 @@
 //  https://github.com/nealyoung/NYSegmentedControl
 //
 
+#import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
 @interface NYSegmentLabel : UILabel

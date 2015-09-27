@@ -36,15 +36,7 @@
     return self;
 }
 
-- (void)drawRect:(CGRect)rect {
-    if (self.drawsGradientBackground) {
-        CAGradientLayer *gradientLayer = (CAGradientLayer *)self.layer;
-        gradientLayer.colors = @[(__bridge id)[self.gradientTopColor CGColor],
-                                 (__bridge id)[self.gradientBottomColor CGColor]];
-    } else {
-        self.layer.backgroundColor = [self.backgroundColor CGColor];
-    }
-}
+
 
 #pragma mark - Getters and Setters
 
