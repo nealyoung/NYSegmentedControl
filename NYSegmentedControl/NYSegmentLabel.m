@@ -46,26 +46,25 @@
         CGContextSetFillColorWithColor(context, [self.alternativeTextColor CGColor]);
 
         // Path from mask
-        CGPathRef path;
-        
-        if (CGRectIsEmpty(self.maskFrame)) {
-            path = CGPathCreateMutable();
-        } else {
-            UIBezierPath *roundRectBezierPath = [UIBezierPath bezierPathWithRoundedRect:self.maskFrame
-                                                                           cornerRadius:self.maskCornerRadius];
-            path = CGPathCreateCopy([roundRectBezierPath CGPath]);
-        }
-        
+        CGPathRef path = [self pathForRoundedRect:self.maskFrame radius:self.maskCornerRadius];
         CGContextAddPath(context, path);
-        
+
         // Fill the path
         CGContextFillPath(context);
-        CFRelease(path);
 
         // Clean up
         CGContextRestoreGState(context);
         CGImageRelease(mask);
     }
+}
+
+- (CGPathRef)pathForRoundedRect:(CGRect)rect radius:(CGFloat)radius {
+    if (CGRectIsEmpty(rect)) {
+        return CGPathCreateMutable();
+    }
+    
+    UIBezierPath* path = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius];
+    return [path CGPath];
 }
 
 - (UIColor *)alternativeTextColor {

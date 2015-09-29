@@ -23,7 +23,12 @@
 /**
  Data source of segment items
  */
-@property (weak, nonatomic) IBOutlet id <NYSegmentedControlDataSource> dataSource;
+@property (weak) IBOutlet id <NYSegmentedControlDataSource> dataSource;
+
+/**
+ Reload items data if dataSource is defined
+ */
+- (void) reloadData;
 
 /**
  If YES, selectedTitleFont and SelectedTitleTextColor are used for the selected segment's title label. The default value is YES.
@@ -147,28 +152,22 @@
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
 
 /**
- If set to YES, UIView spring animations will be used to animate the position of the segment indicator
+ If `YES`, than use UIView spring animations to animate the motion of the segment indicator
  */
 @property (nonatomic) BOOL usesSpringAnimations UI_APPEARANCE_SELECTOR;
 
 /**
  The animation duration used if spring animations are enabled
- 
- @see usesSpringAnimations
  */
 @property (nonatomic) CGFloat springAnimationDuration UI_APPEARANCE_SELECTOR;
 
 /**
- The damping ratio for the spring animation used if spring animations are enabled
- 
- @see usesSpringAnimations
+ The damping ratio for the spring animation
  */
 @property (nonatomic) CGFloat springAnimationDampingRatio UI_APPEARANCE_SELECTOR;
 
 /**
- The initial spring velocity used if spring animations are enabled
- 
- @see usesSpringAnimations
+ The initial spring velocity
  */
 @property (nonatomic) CGFloat springAnimationVelocity UI_APPEARANCE_SELECTOR;
 
@@ -227,12 +226,5 @@
  @param animated Specify YES if the selected segment indicator should animate its position change.
  */
 - (void)setSelectedSegmentIndex:(NSUInteger)selectedSegmentIndex animated:(BOOL)animated;
-
-/**
- Reloads the control's items from its data source, if defined
- 
- @see dataSource
- */
-- (void)reloadData;
 
 @end
