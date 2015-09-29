@@ -174,14 +174,13 @@
         
         if (self.stylesTitleForSelectedSegment) {
             if (self.selectedSegmentIndex == i) {
-                segment.titleLabel.font = self.selectedTitleFont;
                 segment.titleLabel.maskFrame = segment.titleLabel.bounds;
-            } else {
-                segment.titleLabel.font = self.titleFont;
             }
             
+            segment.titleLabel.font = self.titleFont;
             segment.titleLabel.alternativeTextColor = self.selectedTitleTextColor;
             segment.titleLabel.textColor = self.titleTextColor;
+            segment.titleLabel.alternativeFont = self.selectedTitleFont;
         } else {
             segment.titleLabel.font = self.titleFont;
             segment.titleLabel.textColor = self.titleTextColor;
@@ -262,7 +261,6 @@
                           duration:self.segmentIndicatorAnimationDuration
                            options:UIViewAnimationOptionTransitionCrossDissolve
                         animations:^{
-                            previousSegment.titleLabel.font = self.titleFont;
                             previousSegment.titleLabel.maskFrame = CGRectZero;
                         }
                         completion:nil];
@@ -271,11 +269,6 @@
                           duration:self.segmentIndicatorAnimationDuration
                            options:UIViewAnimationOptionTransitionCrossDissolve
                         animations:^{
-                            selectedSegment.titleLabel.font = self.selectedTitleFont;
-                            
-                            if (self.drawsSegmentIndicatorGradientBackground) {
-                                //selectedSegment.titleLabel.shadowColor = [UIColor darkGrayColor];
-                            }
                         }
                         completion:nil];
     }
