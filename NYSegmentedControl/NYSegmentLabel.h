@@ -14,6 +14,5 @@
 @property (nonatomic, strong) UIColor *alternativeTextColor;
 @property (nonatomic, assign) CGRect maskFrame;
 @property (nonatomic, assign) CGFloat maskCornerRadius;
-@property(nonatomic, strong) UIFont *alternativeFont;
 
 @end
