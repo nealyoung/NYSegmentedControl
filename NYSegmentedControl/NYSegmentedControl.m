@@ -438,6 +438,11 @@
     return self.selectedSegmentIndicator.drawsGradientBackground;
 }
 
+- (void)setBounds:(CGRect)bounds {
+    [super setBounds:bounds];
+    self.selectedSegmentIndicator.cornerRadius = self.cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
+}
+
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
     self.selectedSegmentIndicator.cornerRadius = self.cornerRadius * ((self.frame.size.height - self.segmentIndicatorInset * 2) / self.frame.size.height);
