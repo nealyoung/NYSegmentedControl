@@ -142,7 +142,7 @@
 /**
  The index of the currently selected segment
  */
-@property (nonatomic) NSUInteger selectedSegmentIndex;
+@property (nonatomic) NSInteger selectedSegmentIndex;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
 
@@ -226,7 +226,7 @@
  @param selectedSegmentIndex The index of the segment to select. It must be a number between 0 and the number of segments (numberOfSegments) minus 1; values exceeding this upper range are pinned to it.
  @param animated Specify YES if the selected segment indicator should animate its position change.
  */
-- (void)setSelectedSegmentIndex:(NSUInteger)selectedSegmentIndex animated:(BOOL)animated;
+- (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex animated:(BOOL)animated;
 
 /**
  Reloads the control's items from its data source, if defined
