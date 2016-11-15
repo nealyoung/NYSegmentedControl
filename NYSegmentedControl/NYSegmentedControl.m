@@ -382,10 +382,11 @@
 #pragma mark - Helpers
 
 - (CGRect)indicatorFrameForSegment:(NYSegment *)segment {
-    return CGRectMake(CGRectGetMinX(segment.frame) + self.segmentIndicatorInset,
-                      CGRectGetMinY(segment.frame) + self.segmentIndicatorInset,
-                      CGRectGetWidth(segment.frame) - (2.0f * self.segmentIndicatorInset),
-                      CGRectGetHeight(segment.frame) - (2.0f * self.segmentIndicatorInset));
+    CGRect rect = CGRectMake(CGRectGetMinX(segment.frame) + self.segmentIndicatorInset,
+                             CGRectGetMinY(segment.frame) + self.segmentIndicatorInset,
+                             CGRectGetWidth(segment.frame) - (2.0f * self.segmentIndicatorInset),
+                             CGRectGetHeight(segment.frame) - (2.0f * self.segmentIndicatorInset));
+    return CGRectIntegral(rect);
 }
 
 #pragma mark - Getters and Setters
