@@ -176,12 +176,13 @@
             if (self.selectedSegmentIndex == i) {
                 segment.titleLabel.font = self.selectedTitleFont;
                 segment.titleLabel.maskFrame = segment.titleLabel.bounds;
+                segment.titleLabel.textColor = self.selectedTitleTextColor;
             } else {
                 segment.titleLabel.font = self.titleFont;
+                segment.titleLabel.textColor = self.titleTextColor;
             }
             
             segment.titleLabel.alternativeTextColor = self.selectedTitleTextColor;
-            segment.titleLabel.textColor = self.titleTextColor;
         } else {
             segment.titleLabel.font = self.titleFont;
             segment.titleLabel.textColor = self.titleTextColor;

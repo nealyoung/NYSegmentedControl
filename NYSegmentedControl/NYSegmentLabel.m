@@ -59,7 +59,7 @@
         CGContextAddPath(context, path);
         
         // Fill the path
-        CGContextFillPath(context);
+//        CGContextFillPath(context);
         CFRelease(path);
 
         // Clean up
