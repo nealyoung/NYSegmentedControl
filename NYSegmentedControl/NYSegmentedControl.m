@@ -18,7 +18,7 @@
 @property NYSegmentIndicator *selectedSegmentIndicator;
 @property (nonatomic, getter=isAnimating) BOOL animating;
 
-- (void)moveSelectedSegmentIndicatorToSegmentAtIndex:(NSUInteger)index animated:(BOOL)animated;
+- (void)moveSelectedSegmentIndicatorToSegmentAtIndex:(NSInteger)index animated:(BOOL)animated;
 - (CGRect)indicatorFrameForSegment:(NYSegment *)segment;
 
 - (void)panGestureRecognized:(UIPanGestureRecognizer *)panGestureRecognizer;
@@ -187,7 +187,9 @@
         }
     }
     
-    self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:self.segments[self.selectedSegmentIndex]];
+    if (self.selectedSegmentIndex != UISegmentedControlNoSegment) {
+        self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:self.segments[self.selectedSegmentIndex]];
+    }
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -250,22 +252,32 @@
     return segment.titleLabel.text;
 }
 
-- (void)moveSelectedSegmentIndicatorToSegmentAtIndex:(NSUInteger)index animated:(BOOL)animated {
+- (void)moveSelectedSegmentIndicatorToSegmentAtIndex:(NSInteger)index animated:(BOOL)animated {
+    if (index == UISegmentedControlNoSegment) {
+        //Hide segment indicator
+        self.selectedSegmentIndicator.hidden = YES;
+        return;
+    } else {
+        self.selectedSegmentIndicator.hidden = NO;
+    }
+    
     NYSegment *selectedSegment = self.segments[index];
 
     // If we're moving the indicator back to the originally selected segment, don't change the segment's font style
     if (index != self.selectedSegmentIndex && self.stylesTitleForSelectedSegment) {
-        NYSegment *previousSegment = self.segments[self.selectedSegmentIndex];
-        
-        [UIView transitionWithView:previousSegment.titleLabel
-                          duration:self.segmentIndicatorAnimationDuration
-                           options:UIViewAnimationOptionTransitionCrossDissolve
-                        animations:^{
-                            previousSegment.titleLabel.font = self.titleFont;
-                            previousSegment.titleLabel.textColor = self.titleTextColor;
-                            previousSegment.titleLabel.maskFrame = CGRectZero;
-                        }
-                        completion:nil];
+        if (self.selectedSegmentIndex != UISegmentedControlNoSegment) {
+            NYSegment *previousSegment = self.segments[self.selectedSegmentIndex];
+            
+            [UIView transitionWithView:previousSegment.titleLabel
+                              duration:self.segmentIndicatorAnimationDuration
+                               options:UIViewAnimationOptionTransitionCrossDissolve
+                            animations:^{
+                                previousSegment.titleLabel.font = self.titleFont;
+                                previousSegment.titleLabel.textColor = self.titleTextColor;
+                                previousSegment.titleLabel.maskFrame = CGRectZero;
+                            }
+                            completion:nil];
+        }
         
         [UIView transitionWithView:selectedSegment.titleLabel
                           duration:self.segmentIndicatorAnimationDuration
@@ -281,6 +293,10 @@
                         completion:nil];
     }
     
+    if (_selectedSegmentIndex == UISegmentedControlNoSegment) {
+        self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
+    }
+    
     if (animated) {
         void (^animationsBlock)(void) = ^{
             self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
@@ -294,6 +310,7 @@
             }
         };
         
+        [self.selectedSegmentIndicator setNeedsDisplay];
         if (NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_6_1 || !self.usesSpringAnimations) {
             [UIView animateWithDuration:self.segmentIndicatorAnimationDuration
                              animations:animationsBlock
@@ -308,6 +325,7 @@
                              completion:nil];
         }
     } else {
+        [self.selectedSegmentIndicator setNeedsDisplay];
         self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
         
         if (self.stylesTitleForSelectedSegment) {
@@ -515,18 +533,26 @@
     [self setNeedsLayout];
 }
 
-- (void)setSelectedSegmentIndex:(NSUInteger)selectedSegmentIndex {
-    if (selectedSegmentIndex >= self.numberOfSegments) {
+- (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex {
+    if (selectedSegmentIndex >= (NSInteger)self.numberOfSegments) {
         selectedSegmentIndex = self.numberOfSegments - 1;
+    } else if (selectedSegmentIndex < 0) {
+        if (selectedSegmentIndex != UISegmentedControlNoSegment) {
+            selectedSegmentIndex = 0;
+        }
     }
     
     [self moveSelectedSegmentIndicatorToSegmentAtIndex:selectedSegmentIndex animated:NO];
     _selectedSegmentIndex = selectedSegmentIndex;
 }
 
-- (void)setSelectedSegmentIndex:(NSUInteger)selectedSegmentIndex animated:(BOOL)animated {
-    if (selectedSegmentIndex >= self.numberOfSegments) {
+- (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex animated:(BOOL)animated {
+    if (selectedSegmentIndex >= (NSInteger)self.numberOfSegments) {
         selectedSegmentIndex = self.numberOfSegments - 1;
+    } else if (selectedSegmentIndex < 0) {
+        if (selectedSegmentIndex != UISegmentedControlNoSegment) {
+            selectedSegmentIndex = 0;
+        }
     }
     
     [self moveSelectedSegmentIndicatorToSegmentAtIndex:selectedSegmentIndex animated:animated];

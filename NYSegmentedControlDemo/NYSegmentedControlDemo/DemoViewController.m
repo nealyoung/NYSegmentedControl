@@ -86,6 +86,7 @@
 #endif
     foursquareSegmentedControl.center = CGPointMake(lightControlExampleView.center.x, lightControlExampleView.center.y + 30.0f);
     foursquareSegmentedControlBackgroundView.center = foursquareSegmentedControl.center;
+    foursquareSegmentedControl.selectedSegmentIndex = UISegmentedControlNoSegment;
     [lightControlExampleView addSubview:foursquareSegmentedControl];
     
     UIView *darkControlExampleView = [[UIView alloc] initWithFrame:self.view.bounds];
