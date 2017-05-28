@@ -92,8 +92,7 @@
     [self addSubview:self.selectedSegmentIndicator];
     
     UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
-    [panGestureRecognizer setMinimumNumberOfTouches:1];
-    [panGestureRecognizer setMaximumNumberOfTouches:1];
+    panGestureRecognizer.maximumNumberOfTouches = 1;
     [self.selectedSegmentIndicator addGestureRecognizer:panGestureRecognizer];
     
     UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognized:)];
