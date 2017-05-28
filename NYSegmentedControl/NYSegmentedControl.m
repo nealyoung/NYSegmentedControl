@@ -112,11 +112,11 @@
 
 - (NSArray *)buildSegmentsFromDataSource {
     if (self.dataSource) {
-        NSUInteger numberOfSegments = [self.dataSource numberOfSegmentsOfControl:self];
+        NSUInteger numberOfSegments = [self.dataSource numberOfSegments:self];
         NSMutableArray *segmentsArray = [NSMutableArray arrayWithCapacity:numberOfSegments];
         
         for (int i = 0; i < numberOfSegments; i++) {
-            NSString *title = [self.dataSource segmentedControl:self titleAtIndex:i];
+            NSString *title = [self.dataSource segmentedControl:self titleForSegmentAtIndex:i];
             NYSegment *segment = [[NYSegment alloc] initWithTitle:title];
             [self addSubview:segment];
             [segmentsArray addObject:segment];

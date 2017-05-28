@@ -4,8 +4,8 @@
 
 @protocol NYSegmentedControlDataSource <NSObject>
 
-- (NSUInteger) numberOfSegmentsOfControl:(NYSegmentedControl *)control;
-- (NSString *) segmentedControl:(NYSegmentedControl *)control titleAtIndex:(NSInteger)index;
+- (NSUInteger)numberOfSegments:(NYSegmentedControl *)control;
+- (NSString *)segmentedControl:(NYSegmentedControl *)control titleForSegmentAtIndex:(NSInteger)index;
 
 @end
 
