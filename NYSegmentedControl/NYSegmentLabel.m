@@ -34,7 +34,7 @@
 
         // Create a mask from the text
         mask = CGBitmapContextCreateImage(context);
-
+        
         CGContextSaveGState(context);
         CGContextTranslateCTM(context, 0, self.frame.size.height);
         CGContextScaleCTM(context, 1.0, (CGFloat) -1.0);

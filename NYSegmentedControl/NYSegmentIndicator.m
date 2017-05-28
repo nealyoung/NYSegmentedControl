@@ -9,6 +9,12 @@
 
 #import "NYSegmentIndicator.h"
 
+
+@interface NYSegmentIndicator ()
+@property (nonatomic, strong, readwrite) CALayer * gradientLayer ;
+@end
+
+
 @implementation NYSegmentIndicator
 
 + (Class)layerClass {
@@ -30,15 +36,7 @@
     return self;
 }
 
-- (void)drawRect:(CGRect)rect {
-    if (self.drawsGradientBackground) {
-        CAGradientLayer *gradientLayer = (CAGradientLayer *)self.layer;
-        gradientLayer.colors = @[(__bridge id)[self.gradientTopColor CGColor],
-                                 (__bridge id)[self.gradientBottomColor CGColor]];
-    } else {
-        self.layer.backgroundColor = [self.backgroundColor CGColor];
-    }
-}
+
 
 #pragma mark - Getters and Setters
 
@@ -67,19 +65,45 @@
     return self.layer.cornerRadius;
 }
 
+
 - (void)setDrawsGradientBackground:(BOOL)drawsGradientBackground {
     _drawsGradientBackground = drawsGradientBackground;
-    [self setNeedsDisplay];
+    
+    if (drawsGradientBackground)
+    {
+        CAGradientLayer * gradientLayer = [[CAGradientLayer alloc] init] ;
+        gradientLayer = [[CAGradientLayer alloc] init] ;
+        gradientLayer.frame = self.layer.frame ;
+        
+        gradientLayer.colors = @[(__bridge id)[self.gradientTopColor CGColor],
+                                 (__bridge id)[self.gradientBottomColor CGColor]];
+        
+        [self.layer addSublayer:gradientLayer] ;
+        [self.gradientLayer removeFromSuperlayer] ;
+        self.gradientLayer = gradientLayer ;
+    }
+    else
+    {
+        [self.gradientLayer removeFromSuperlayer] ;
+        self.gradientLayer = nil ;
+    }
 }
+
 
 - (void)setGradientTopColor:(UIColor *)gradientTopColor {
     _gradientTopColor = gradientTopColor;
-    [self setNeedsDisplay];
+    
+    // recreate the gradient layer
+    [self setDrawsGradientBackground:self.drawsGradientBackground] ;
 }
 
 - (void)setGradientBottomColor:(UIColor *)gradientBottomColor {
     _gradientBottomColor = gradientBottomColor;
-    [self setNeedsDisplay];
+    
+    // recreate the gradient layer
+    [self setDrawsGradientBackground:self.drawsGradientBackground] ;
 }
+
+
 
 @end
