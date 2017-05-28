@@ -175,12 +175,13 @@
             if (self.selectedSegmentIndex == i) {
                 segment.titleLabel.font = self.selectedTitleFont;
                 segment.titleLabel.maskFrame = segment.titleLabel.bounds;
+                segment.titleLabel.textColor = self.selectedTitleTextColor;
             } else {
                 segment.titleLabel.font = self.titleFont;
+                segment.titleLabel.textColor = self.titleTextColor;
             }
             
             segment.titleLabel.alternativeTextColor = self.selectedTitleTextColor;
-            segment.titleLabel.textColor = self.titleTextColor;
         } else {
             segment.titleLabel.font = self.titleFont;
             segment.titleLabel.textColor = self.titleTextColor;
@@ -381,10 +382,11 @@
 #pragma mark - Helpers
 
 - (CGRect)indicatorFrameForSegment:(NYSegment *)segment {
-    return CGRectMake(CGRectGetMinX(segment.frame) + self.segmentIndicatorInset,
-                      CGRectGetMinY(segment.frame) + self.segmentIndicatorInset,
-                      CGRectGetWidth(segment.frame) - (2.0f * self.segmentIndicatorInset),
-                      CGRectGetHeight(segment.frame) - (2.0f * self.segmentIndicatorInset));
+    CGRect rect = CGRectMake(CGRectGetMinX(segment.frame) + self.segmentIndicatorInset,
+                             CGRectGetMinY(segment.frame) + self.segmentIndicatorInset,
+                             CGRectGetWidth(segment.frame) - (2.0f * self.segmentIndicatorInset),
+                             CGRectGetHeight(segment.frame) - (2.0f * self.segmentIndicatorInset));
+    return CGRectIntegral(rect);
 }
 
 #pragma mark - Getters and Setters
