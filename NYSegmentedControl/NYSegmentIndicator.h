@@ -1,12 +1,3 @@
-//
-//  NYSegmentIndicator.h
-//  NYSegmentedControl
-//
-//  Copyright (c) 2014 Nealon Young. All rights reserved.
-//
-//  https://github.com/nealyoung/NYSegmentedControl
-//
-
 #import <UIKit/UIKit.h>
 
 @interface NYSegmentIndicator : UIView

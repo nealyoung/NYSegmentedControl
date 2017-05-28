@@ -1,20 +1,11 @@
-//
-//  NYSegment.h
-//  NYSegmentedControl
-//
-//  Copyright (c) 2014 Nealon Young. All rights reserved.
-//
-//  https://github.com/nealyoung/NYSegmentedControl
-//
-
 #import <UIKit/UIKit.h>
 
 @class NYSegment;
-@class NYSegmentLabel;
+@class NYSegmentTextRenderView;
 
 @interface NYSegment : UIView
 
-@property (nonatomic) NYSegmentLabel *titleLabel;
+@property (nonatomic) NYSegmentTextRenderView *titleLabel;
 
 - (instancetype)initWithTitle:(NSString *)title;
 

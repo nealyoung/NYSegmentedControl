@@ -1,12 +1,3 @@
-//
-//  NYSegmentedControl.m
-//  NYSegmentedControl
-//
-//  Copyright (c) 2014 Nealon Young. All rights reserved.
-//
-//  https://github.com/nealyoung/NYSegmentedControl
-//
-
 #import <UIKit/UIKit.h>
 
 @class NYSegmentedControl;
@@ -125,48 +116,48 @@
 @property (nonatomic) UIColor *segmentIndicatorGradientBottomColor UI_APPEARANCE_SELECTOR;
 
 /**
- The color of the selected segment indicator's border
+ The color of the selected segment indicator's border.
  */
 @property (nonatomic) UIColor *segmentIndicatorBorderColor UI_APPEARANCE_SELECTOR;
 
 /**
- The width of the selected segment indicator's border
+ The width of the selected segment indicator's border.
  */
 @property (nonatomic) CGFloat segmentIndicatorBorderWidth UI_APPEARANCE_SELECTOR;
 
 /**
- The number of segments in the control (read-only)
+ The number of segments in the control (read-only).
  */
 @property (nonatomic, readonly) NSUInteger numberOfSegments;
 
 /**
- The index of the currently selected segment
+ The index of the currently selected segment.
  */
 @property (nonatomic) NSUInteger selectedSegmentIndex;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
 
 /**
- If set to YES, UIView spring animations will be used to animate the position of the segment indicator
+ If set to YES, UIView spring animations will be used to animate the position of the segment indicator.
  */
 @property (nonatomic) BOOL usesSpringAnimations UI_APPEARANCE_SELECTOR;
 
 /**
- The animation duration used if spring animations are enabled
+ The animation duration used if spring animations are enabled.
  
  @see usesSpringAnimations
  */
 @property (nonatomic) CGFloat springAnimationDuration UI_APPEARANCE_SELECTOR;
 
 /**
- The damping ratio for the spring animation used if spring animations are enabled
+ The damping ratio for the spring animation used if spring animations are enabled.
  
  @see usesSpringAnimations
  */
 @property (nonatomic) CGFloat springAnimationDampingRatio UI_APPEARANCE_SELECTOR;
 
 /**
- The initial spring velocity used if spring animations are enabled
+ The initial spring velocity used if spring animations are enabled.
  
  @see usesSpringAnimations
  */
@@ -204,7 +195,7 @@
 - (void)removeAllSegments;
 
 /**
- Sets the title for a segment in the control
+ Sets the title for a segment in the control.
  
  @param title A string to display in the segment as its title.
  @param index The index of the segment. It must be a number between 0 and the number of segments (numberOfSegments) minus 1; values exceeding this upper range are pinned to it.
@@ -229,7 +220,7 @@
 - (void)setSelectedSegmentIndex:(NSUInteger)selectedSegmentIndex animated:(BOOL)animated;
 
 /**
- Reloads the control's items from its data source, if defined
+ Reloads the control's items from its data source, if defined.
  
  @see dataSource
  */

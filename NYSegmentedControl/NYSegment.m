@@ -1,16 +1,7 @@
-//
-//  NYSegment.m
-//  NYSegmentedControl
-//
-//  Copyright (c) 2014 Nealon Young. All rights reserved.
-//
-//  https://github.com/nealyoung/NYSegmentedControl
-//
-
 #import "NYSegment.h"
-#import "NYSegmentLabel.h"
+#import "NYSegmentTextRenderView.h"
 
-static CGFloat const kMinimumSegmentWidth = 68.0f;
+static CGFloat const kMinimumSegmentWidth = 64.0f;
 
 @implementation NYSegment
 
@@ -26,10 +17,9 @@ static CGFloat const kMinimumSegmentWidth = 68.0f;
     self = [super initWithFrame:frame];
     if (self) {
         self.userInteractionEnabled = NO;
-        self.titleLabel = [[NYSegmentLabel alloc] initWithFrame:self.frame];
+        self.titleLabel = [[NYSegmentTextRenderView alloc] initWithFrame:self.frame];
         self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.titleLabel.font = [UIFont systemFontOfSize:13.0f];
-        self.titleLabel.textAlignment = NSTextAlignmentCenter;
         self.titleLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:self.titleLabel];
     }

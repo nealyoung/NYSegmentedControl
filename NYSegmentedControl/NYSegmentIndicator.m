@@ -1,12 +1,3 @@
-//
-//  NYSegmentIndicator.m
-//  NYSegmentedControl
-//
-//  Copyright (c) 2014 Nealon Young. All rights reserved.
-//
-//  https://github.com/nealyoung/NYSegmentedControl
-//
-
 #import "NYSegmentIndicator.h"
 
 @implementation NYSegmentIndicator

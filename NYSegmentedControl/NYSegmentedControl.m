@@ -1,16 +1,7 @@
-//
-//  NYSegmentedControl.m
-//  NYSegmentedControl
-//
-//  Copyright (c) 2014 Nealon Young. All rights reserved.
-//
-//  https://github.com/nealyoung/NYSegmentedControl
-//
-
 #import "NYSegmentedControl.h"
 #import "NYSegment.h"
 #import "NYSegmentIndicator.h"
-#import "NYSegmentLabel.h"
+#import "NYSegmentTextRenderView.h"
 
 @interface NYSegmentedControl ()
 
@@ -155,7 +146,7 @@
         }
     }
     
-    return CGSizeMake(maxSegmentWidth * [self.segments count], 30.0f);
+    return CGSizeMake(maxSegmentWidth * [self.segments count], 32.0f);
 }
 
 - (CGSize)intrinsicContentSize {
