@@ -30,39 +30,34 @@
     CGContextSaveGState(context);
 
     if (!CGRectIsEmpty(self.selectedTextDrawingRect)) {
-        // Frames to draw normal text within
         CGRect beforeMaskFrame = CGRectMake(0, 0, CGRectGetMinX(self.selectedTextDrawingRect), CGRectGetHeight(self.frame));
         CGRect afterMaskFrame = CGRectMake(CGRectGetMaxX(self.selectedTextDrawingRect),
                                            0,
                                            CGRectGetWidth(self.frame) - CGRectGetMaxX(self.selectedTextDrawingRect),
                                            CGRectGetHeight(self.frame));
-        CGRect rects[2] = {beforeMaskFrame, afterMaskFrame};
-
-        // Clip to those frames
-        CGContextClipToRects(context, rects, 2);
+        CGRect unselectedTextDrawingRects[2] = {beforeMaskFrame, afterMaskFrame};
+        CGContextClipToRects(context, unselectedTextDrawingRects, 2);
     }
 
-    CGSize textRectSize = [self.text sizeWithAttributes:self.unselectedTextAttributes];
+    CGFloat unselectedTextRectHeight = [self.text sizeWithAttributes:self.unselectedTextAttributes].height;
+    CGRect unselectedTextDrawingRect = CGRectMake(rect.origin.x,
+                                                  rect.origin.y + (rect.size.height - unselectedTextRectHeight) / 2.0f,
+                                                  rect.size.width,
+                                                  unselectedTextRectHeight);
 
-    // Centered rect
-    CGRect drawRect = CGRectMake(rect.origin.x,
-                                 rect.origin.y + (rect.size.height - textRectSize.height) / 2.0f,
-                                 rect.size.width,
-                                 textRectSize.height);
+    [self.text drawInRect:unselectedTextDrawingRect withAttributes:self.unselectedTextAttributes];
 
-    [self.text drawInRect:drawRect withAttributes:self.unselectedTextAttributes];
-
-    // Restore state
     CGContextRestoreGState(context);
 
     if (!CGRectIsEmpty(self.selectedTextDrawingRect)) {
-        context = UIGraphicsGetCurrentContext();
-
-        // Clip to mask
+        CGFloat selectedTextRectHeight = [self.text sizeWithAttributes:self.selectedTextAttributes].height;
+        CGRect selectedTextDrawingRect = CGRectMake(rect.origin.x,
+                                                    rect.origin.y + (rect.size.height - selectedTextRectHeight) / 2.0f,
+                                                    rect.size.width,
+                                                    selectedTextRectHeight);
         CGContextClipToRect(context, self.selectedTextDrawingRect);
 
-        // Draw masked text
-        [self.text drawInRect:drawRect withAttributes:self.selectedTextAttributes];
+        [self.text drawInRect:selectedTextDrawingRect withAttributes:self.selectedTextAttributes];
     }
 }
 
@@ -77,21 +72,21 @@
     paragraphStyle.alignment = NSTextAlignmentCenter;
 
     NSDictionary *selectedAttributes = @{ NSFontAttributeName: self.selectedFont,
-                                             NSForegroundColorAttributeName: self.selectedTextColor,
-                                             NSParagraphStyleAttributeName: paragraphStyle };
+                                          NSForegroundColorAttributeName: self.selectedTextColor,
+                                          NSParagraphStyleAttributeName: paragraphStyle };
 
     self.selectedTextAttributes = selectedAttributes;
 }
 
-- (void)setupNormalAttributes {
+- (void)setupUnselectedAttributes {
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.alignment = NSTextAlignmentCenter;
 
-    NSDictionary *normalAttributes = @{ NSFontAttributeName: self.font,
-                                        NSForegroundColorAttributeName: self.textColor,
-                                        NSParagraphStyleAttributeName: paragraphStyle };
+    NSDictionary *unselectedAttributes = @{ NSFontAttributeName: self.font,
+                                            NSForegroundColorAttributeName: self.textColor,
+                                            NSParagraphStyleAttributeName: paragraphStyle };
 
-    self.unselectedTextAttributes = normalAttributes;
+    self.unselectedTextAttributes = unselectedAttributes;
 }
 
 #pragma mark - Setters
@@ -111,7 +106,7 @@
 - (void)setTextColor:(UIColor *)textColor {
     _textColor = textColor;
 
-    [self setupNormalAttributes];
+    [self setupUnselectedAttributes];
 }
 
 - (void)setSelectedTextColor:(UIColor *)selectedTextColor {
@@ -129,7 +124,7 @@
 - (void)setFont:(UIFont *)font {
     _font = font;
     
-    [self setupNormalAttributes];
+    [self setupUnselectedAttributes];
 }
 
 @end
