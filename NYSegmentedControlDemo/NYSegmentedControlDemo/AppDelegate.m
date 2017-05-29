@@ -14,10 +14,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     DemoViewController *viewController = [[DemoViewController alloc] initWithNibName:nil bundle:nil];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
-    
+
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = navigationController;
+    self.window.rootViewController = viewController;
     [self.window makeKeyAndVisible];
     
     return YES;
