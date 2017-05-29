@@ -16,6 +16,9 @@ static CGFloat const kMinimumSegmentWidth = 64.0f;
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        self.isAccessibilityElement = YES;
+        self.accessibilityTraits = UIAccessibilityTraitButton;
+
         self.userInteractionEnabled = NO;
         self.titleLabel = [[NYSegmentTextRenderView alloc] initWithFrame:self.frame];
         self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -29,6 +32,19 @@ static CGFloat const kMinimumSegmentWidth = 64.0f;
 - (CGSize)sizeThatFits:(CGSize)size {
     CGSize sizeThatFits = [self.titleLabel sizeThatFits:size];
     return CGSizeMake(MAX(sizeThatFits.width * 1.4f, kMinimumSegmentWidth), sizeThatFits.height);
+}
+
+- (void)setSelected:(BOOL)selected {
+    _selected = selected;
+    if (selected) {
+        self.accessibilityTraits = self.accessibilityTraits | UIAccessibilityTraitSelected;
+    } else {
+        self.accessibilityTraits = self.accessibilityTraits & ~UIAccessibilityTraitSelected;
+    }
+}
+
+- (NSString *)accessibilityLabel {
+    return self.titleLabel.text;
 }
 
 @end

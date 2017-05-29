@@ -494,8 +494,12 @@
     if (selectedSegmentIndex >= self.numberOfSegments) {
         selectedSegmentIndex = self.numberOfSegments - 1;
     }
-    
+
     [self moveSelectedSegmentIndicatorToSegmentAtIndex:selectedSegmentIndex animated:NO];
+
+    self.segments[_selectedSegmentIndex].selected = NO;
+    self.segments[selectedSegmentIndex].selected = YES;
+
     _selectedSegmentIndex = selectedSegmentIndex;
 }
 
@@ -505,6 +509,10 @@
     }
     
     [self moveSelectedSegmentIndicatorToSegmentAtIndex:selectedSegmentIndex animated:animated];
+
+    self.segments[_selectedSegmentIndex].selected = NO;
+    self.segments[selectedSegmentIndex].selected = YES;
+
     _selectedSegmentIndex = selectedSegmentIndex;
 }
 

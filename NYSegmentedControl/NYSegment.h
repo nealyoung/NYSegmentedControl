@@ -6,6 +6,7 @@
 @interface NYSegment : UIView
 
 @property (nonatomic) NYSegmentTextRenderView *titleLabel;
+@property (nonatomic) BOOL selected;
 
 - (instancetype)initWithTitle:(NSString *)title;
 
