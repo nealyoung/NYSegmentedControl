@@ -163,7 +163,7 @@
         
         if (self.stylesTitleForSelectedSegment) {
             if (self.selectedSegmentIndex == i) {
-                segment.titleLabel.maskFrame = segment.titleLabel.bounds;
+                segment.titleLabel.selectedTextDrawingRect = segment.titleLabel.bounds;
             }
             
             segment.titleLabel.font = self.titleFont;
@@ -251,7 +251,7 @@
                           duration:self.segmentIndicatorAnimationDuration
                            options:UIViewAnimationOptionTransitionCrossDissolve
                         animations:^{
-                            previousSegment.titleLabel.maskFrame = CGRectZero;
+                            previousSegment.titleLabel.selectedTextDrawingRect = CGRectZero;
                         }
                         completion:nil];
         
@@ -269,10 +269,10 @@
             
             if (self.stylesTitleForSelectedSegment) {
                 [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
-                    segment.titleLabel.maskFrame = CGRectZero;
+                    segment.titleLabel.selectedTextDrawingRect = CGRectZero;
                 }];
                 
-                selectedSegment.titleLabel.maskFrame = selectedSegment.titleLabel.bounds;
+                selectedSegment.titleLabel.selectedTextDrawingRect = selectedSegment.titleLabel.bounds;
             }
         };
         
@@ -293,7 +293,7 @@
         self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
         
         if (self.stylesTitleForSelectedSegment) {
-            selectedSegment.titleLabel.maskFrame = selectedSegment.titleLabel.bounds;
+            selectedSegment.titleLabel.selectedTextDrawingRect = selectedSegment.titleLabel.bounds;
         }
     }
 }
@@ -306,14 +306,9 @@
     if (self.stylesTitleForSelectedSegment) {
         // Style the segment the center of the indicator is covering
         [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
-            CGRect segmentFrame = segment.frame;
-
-            // We get the intersection of the the selected segment indicator's frame and the segment's frame, so the text render view can show text with the
-            // selected style in the area covered by the selected segment indicator
-            CGRect intersection = CGRectIntersection(segmentFrame, self.selectedSegmentIndicator.frame);
-            CGAffineTransform transform = CGAffineTransformMakeTranslation(-CGRectGetMinX(segmentFrame), -CGRectGetMinY(segmentFrame));
-            CGRect maskFrame = CGRectApplyAffineTransform(intersection, transform);
-            segment.titleLabel.maskFrame = maskFrame;
+            // We get the intersection of the the selected segment indicator's frame and the segment's frame, so the text render view can show text with the selected style in the area covered by the selected segment indicator
+            CGRect intersectionRect = CGRectIntersection(segment.frame, self.selectedSegmentIndicator.frame);
+            segment.titleLabel.selectedTextDrawingRect = [segment convertRect:intersectionRect fromView:segment.superview];
         }];
     }
     

@@ -2,69 +2,39 @@
 
 @interface NYSegmentTextRenderView ()
 
-@property (nonatomic, strong) NSDictionary *normalAttributes;
-@property (nonatomic, strong) NSDictionary *alternativeAttributes;
+@property (nonatomic, strong) NSDictionary *unselectedTextAttributes;
+@property (nonatomic, strong) NSDictionary *selectedTextAttributes;
 
 @end
 
 @implementation NYSegmentTextRenderView
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        [self commonInit];
-    }
-
-    return self;
-}
-
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
+
     if (self) {
-        [self commonInit];
+        _font = [UIFont systemFontOfSize:14.0f];
+        _textColor = [UIColor darkGrayColor];
+
+        _selectedTextColor = _textColor;
+        _selectedFont = _font;
+
+        [self setupSelectedAttributes];
     }
 
     return self;
-}
-
-- (id)initWithCoder:(NSCoder *)coder {
-    self = [super initWithCoder:coder];
-    if (self) {
-        [self commonInit];
-    }
-
-    return self;
-}
-
-- (void)commonInit {
-    _font = [UIFont systemFontOfSize:14.0f];
-    _textColor = [UIColor darkGrayColor];
-
-    _alternativeTextColor = self.textColor;
-    _alternativeFont = self.font;
-
-    [self setupAlternativeAttributes];
 }
 
 - (void)drawRect:(CGRect)rect {
-    CGSize textRectSize = [self.text sizeWithAttributes:self.normalAttributes];
-
-    // Centered rect
-    CGRect drawRect = CGRectMake(rect.origin.x,
-                                 rect.origin.y + (rect.size.height - textRectSize.height) / 2.0f,
-                                 rect.size.width,
-                                 textRectSize.height);
-
-    // Get current context
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
 
-    if (!CGRectIsEmpty(self.maskFrame)) {
+    if (!CGRectIsEmpty(self.selectedTextDrawingRect)) {
         // Frames to draw normal text within
-        CGRect beforeMaskFrame = CGRectMake(0, 0, CGRectGetMinX(self.maskFrame), CGRectGetHeight(self.frame));
-        CGRect afterMaskFrame = CGRectMake(CGRectGetMaxX(self.maskFrame),
+        CGRect beforeMaskFrame = CGRectMake(0, 0, CGRectGetMinX(self.selectedTextDrawingRect), CGRectGetHeight(self.frame));
+        CGRect afterMaskFrame = CGRectMake(CGRectGetMaxX(self.selectedTextDrawingRect),
                                            0,
-                                           CGRectGetWidth(self.frame) - CGRectGetMaxX(self.maskFrame),
+                                           CGRectGetWidth(self.frame) - CGRectGetMaxX(self.selectedTextDrawingRect),
                                            CGRectGetHeight(self.frame));
         CGRect rects[2] = {beforeMaskFrame, afterMaskFrame};
 
@@ -72,38 +42,45 @@
         CGContextClipToRects(context, rects, 2);
     }
 
-    [self.text drawInRect:drawRect withAttributes:self.normalAttributes];
+    CGSize textRectSize = [self.text sizeWithAttributes:self.unselectedTextAttributes];
+
+    // Centered rect
+    CGRect drawRect = CGRectMake(rect.origin.x,
+                                 rect.origin.y + (rect.size.height - textRectSize.height) / 2.0f,
+                                 rect.size.width,
+                                 textRectSize.height);
+
+    [self.text drawInRect:drawRect withAttributes:self.unselectedTextAttributes];
 
     // Restore state
     CGContextRestoreGState(context);
 
-    if (!CGRectIsEmpty(self.maskFrame)) {
+    if (!CGRectIsEmpty(self.selectedTextDrawingRect)) {
         context = UIGraphicsGetCurrentContext();
 
         // Clip to mask
-        CGContextClipToRect(context, self.maskFrame);
+        CGContextClipToRect(context, self.selectedTextDrawingRect);
 
         // Draw masked text
-        [self.text drawInRect:drawRect withAttributes:self.alternativeAttributes];
+        [self.text drawInRect:drawRect withAttributes:self.selectedTextAttributes];
     }
 }
 
-
 - (CGSize)sizeThatFits:(CGSize)size {
-    return [self.text sizeWithAttributes:self.normalAttributes];
+    return [self.text sizeWithAttributes:self.unselectedTextAttributes];
 }
 
 #pragma mark - Private
 
-- (void)setupAlternativeAttributes {
+- (void)setupSelectedAttributes {
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.alignment = NSTextAlignmentCenter;
 
-    NSDictionary *alternativeAttributes = @{ NSFontAttributeName: self.alternativeFont,
-                                             NSForegroundColorAttributeName: self.alternativeTextColor,
+    NSDictionary *selectedAttributes = @{ NSFontAttributeName: self.selectedFont,
+                                             NSForegroundColorAttributeName: self.selectedTextColor,
                                              NSParagraphStyleAttributeName: paragraphStyle };
 
-    self.alternativeAttributes = alternativeAttributes;
+    self.selectedTextAttributes = selectedAttributes;
 }
 
 - (void)setupNormalAttributes {
@@ -114,13 +91,13 @@
                                         NSForegroundColorAttributeName: self.textColor,
                                         NSParagraphStyleAttributeName: paragraphStyle };
 
-    self.normalAttributes = normalAttributes;
+    self.unselectedTextAttributes = normalAttributes;
 }
 
 #pragma mark - Setters
 
-- (void)setMaskFrame:(CGRect)maskFrame {
-    _maskFrame = maskFrame;
+- (void)setSelectedTextDrawingRect:(CGRect)selectedTextDrawingRect {
+    _selectedTextDrawingRect = selectedTextDrawingRect;
 
     [self setNeedsDisplay];
 }
@@ -137,16 +114,16 @@
     [self setupNormalAttributes];
 }
 
-- (void)setAlternativeTextColor:(UIColor *)alternativeTextColor {
-    _alternativeTextColor = alternativeTextColor;
+- (void)setSelectedTextColor:(UIColor *)selectedTextColor {
+    _selectedTextColor = selectedTextColor;
     
-    [self setupAlternativeAttributes];
+    [self setupSelectedAttributes];
 }
 
-- (void)setAlternativeFont:(UIFont *)alternativeFont {
-    _alternativeFont = alternativeFont;
+- (void)setSelectedFont:(UIFont *)selectedFont {
+    _selectedFont = selectedFont;
     
-    [self setupAlternativeAttributes];
+    [self setupSelectedAttributes];
 }
 
 - (void)setFont:(UIFont *)font {

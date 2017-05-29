@@ -6,10 +6,10 @@
 @property (nonatomic, strong, nonnull) UIFont *font;
 @property (nonatomic, strong, nonnull) UIColor *textColor;
 
-@property (nonatomic, strong, nonnull) UIColor *alternativeTextColor;
-@property (nonatomic, strong, nonnull) UIFont *alternativeFont;
+@property (nonatomic, strong, nonnull) UIColor *selectedTextColor;
+@property (nonatomic, strong, nonnull) UIFont *selectedFont;
 
-@property (nonatomic, assign) CGRect maskFrame;
+@property (nonatomic, assign) CGRect selectedTextDrawingRect;
 @property (nonatomic, assign) CGFloat maskCornerRadius;
 
 @end
