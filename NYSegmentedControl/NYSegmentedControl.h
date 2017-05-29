@@ -1,53 +1,55 @@
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class NYSegmentedControl;
 
 @protocol NYSegmentedControlDataSource <NSObject>
 
 - (NSUInteger)numberOfSegments:(NYSegmentedControl *)control;
-- (NSString *)segmentedControl:(NYSegmentedControl *)control titleForSegmentAtIndex:(NSInteger)index;
+- (NSString *)segmentedControl:(NYSegmentedControl *)control titleForSegmentAtIndex:(NSUInteger)index;
 
 @end
 
 @interface NYSegmentedControl : UIControl
 
 /**
- Data source of segment items
+ The segmented control's data source object.
  */
-@property (weak, nonatomic) IBOutlet id <NYSegmentedControlDataSource> dataSource;
+@property (nonatomic, weak, nullable) IBOutlet id <NYSegmentedControlDataSource> dataSource;
 
 /**
- If YES, selectedTitleFont and SelectedTitleTextColor are used for the selected segment's title label. The default value is YES.
+ If YES, selectedTitleFont and selectedTitleTextColor are used for the selected segment's title label. The default value is YES.
  */
 @property (nonatomic) BOOL stylesTitleForSelectedSegment;
 
 /**
- The font used for the segment titles
+ The font used for the segment titles.
  */
 @property (nonatomic) UIFont *titleFont UI_APPEARANCE_SELECTOR;
 
 /**
- The color of the segment titles
+ The color of the segment titles.
  */
 @property (nonatomic) UIColor *titleTextColor UI_APPEARANCE_SELECTOR;
 
 /**
- The font used for the selected segment's title
+ The font used for the selected segment's title.
  */
 @property (nonatomic) UIFont *selectedTitleFont UI_APPEARANCE_SELECTOR;
 
 /**
- The color of the selected segment's title
+ The color of the selected segment's title.
  */
 @property (nonatomic) UIColor *selectedTitleTextColor UI_APPEARANCE_SELECTOR;
 
 /**
- The radius of the control's corners
+ The radius of the control's corners.
  */
 @property (nonatomic) CGFloat cornerRadius UI_APPEARANCE_SELECTOR;
 
 /**
- The color of the control's border
+ The color of the control's border.
  */
 @property (nonatomic) UIColor *borderColor UI_APPEARANCE_SELECTOR;
 
@@ -227,3 +229,5 @@
 - (void)reloadData;
 
 @end
+
+NS_ASSUME_NONNULL_END
