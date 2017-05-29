@@ -173,14 +173,13 @@
         
         if (self.stylesTitleForSelectedSegment) {
             if (self.selectedSegmentIndex == i) {
-                segment.titleLabel.font = self.selectedTitleFont;
                 segment.titleLabel.maskFrame = segment.titleLabel.bounds;
-            } else {
-                segment.titleLabel.font = self.titleFont;
             }
             
+            segment.titleLabel.font = self.titleFont;
             segment.titleLabel.alternativeTextColor = self.selectedTitleTextColor;
             segment.titleLabel.textColor = self.titleTextColor;
+            segment.titleLabel.alternativeFont = self.selectedTitleFont;
         } else {
             segment.titleLabel.font = self.titleFont;
             segment.titleLabel.textColor = self.titleTextColor;
@@ -261,8 +260,6 @@
                           duration:self.segmentIndicatorAnimationDuration
                            options:UIViewAnimationOptionTransitionCrossDissolve
                         animations:^{
-                            previousSegment.titleLabel.font = self.titleFont;
-                            previousSegment.titleLabel.textColor = self.titleTextColor;
                             previousSegment.titleLabel.maskFrame = CGRectZero;
                         }
                         completion:nil];
@@ -271,12 +268,6 @@
                           duration:self.segmentIndicatorAnimationDuration
                            options:UIViewAnimationOptionTransitionCrossDissolve
                         animations:^{
-                            selectedSegment.titleLabel.font = self.selectedTitleFont;
-                            selectedSegment.titleLabel.textColor = self.selectedTitleTextColor;
-                            
-                            if (self.drawsSegmentIndicatorGradientBackground) {
-                                //selectedSegment.titleLabel.shadowColor = [UIColor darkGrayColor];
-                            }
                         }
                         completion:nil];
     }
@@ -311,7 +302,6 @@
         self.selectedSegmentIndicator.frame = [self indicatorFrameForSegment:selectedSegment];
         
         if (self.stylesTitleForSelectedSegment) {
-            selectedSegment.titleLabel.font = self.selectedTitleFont;
             selectedSegment.titleLabel.maskFrame = selectedSegment.titleLabel.bounds;
         }
     }
@@ -325,12 +315,6 @@
     if (self.stylesTitleForSelectedSegment) {
         // Style the segment the center of the indicator is covering
         [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
-            if (CGRectContainsPoint(segment.frame, self.selectedSegmentIndicator.center)) {
-                segment.titleLabel.font = self.selectedTitleFont;
-            } else {
-                segment.titleLabel.font = self.titleFont;
-            }
-            
             CGRect segmentFrame = segment.frame;
             CGRect intersection = CGRectIntersection(segmentFrame, self.selectedSegmentIndicator.frame);
             CGAffineTransform transform = CGAffineTransformMakeTranslation(-CGRectGetMinX(segmentFrame), -CGRectGetMinY(segmentFrame));
