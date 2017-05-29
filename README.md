@@ -3,8 +3,7 @@
 NYSegmentedControl is a customizable, animated replacement for UISegmentedControl inspired by controls found in Instagram, Foursquare, and other apps.
 
 ![Example](https://github.com/nealyoung/NYSegmentedControl/raw/master/example.gif)
-![Screenshot 1](https://github.com/nealyoung/NYSegmentedControl/raw/master/screenshot-dark.png)
-![Screenshot 2](https://github.com/nealyoung/NYSegmentedControl/raw/master/screenshot-light.png)
+![Screenshot](https://github.com/nealyoung/NYSegmentedControl/raw/master/screenshot.png)
 
 ### Features
 * Create segmented controls with animated selection indicator
