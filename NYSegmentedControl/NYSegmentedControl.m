@@ -318,11 +318,21 @@
     // Check that the indicator doesn't exit the bounds of the control
     CGRect newSegmentIndicatorFrame = self.selectedSegmentIndicator.frame;
     newSegmentIndicatorFrame.origin.x += xDiff;
-    
+
+    CGFloat selectedSegmentIndicatorCenterX;
+
     if (CGRectContainsRect(CGRectInset(self.bounds, self.segmentIndicatorInset, 0), newSegmentIndicatorFrame)) {
-        self.selectedSegmentIndicator.center = CGPointMake(self.selectedSegmentIndicator.center.x + xDiff, self.selectedSegmentIndicator.center.y);
+        selectedSegmentIndicatorCenterX = self.selectedSegmentIndicator.center.x + xDiff;
+    } else {
+        if (self.selectedSegmentIndicator.center.x < CGRectGetMidX(self.bounds)) {
+            selectedSegmentIndicatorCenterX = self.segmentIndicatorInset + CGRectGetMidX(self.selectedSegmentIndicator.bounds);
+        } else {
+            selectedSegmentIndicatorCenterX = CGRectGetMaxX(self.bounds) - CGRectGetMidX(self.selectedSegmentIndicator.bounds) - self.segmentIndicatorInset;
+        }
     }
-    
+
+    self.selectedSegmentIndicator.center = CGPointMake(selectedSegmentIndicatorCenterX, self.selectedSegmentIndicator.center.y);
+
     [panGestureRecognizer setTranslation:CGPointMake(0, 0) inView:panGestureRecognizer.view.superview];
     
     if (panGestureRecognizer.state == UIGestureRecognizerStateEnded) {
