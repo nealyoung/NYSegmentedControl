@@ -5,8 +5,8 @@
 
 @interface NYSegmentedControl ()
 
-@property (nonatomic) NSArray *segments;
-@property NYSegmentIndicator *selectedSegmentIndicator;
+@property (nonatomic) NSArray<NYSegment *> *segments;
+@property (nonatomic) NYSegmentIndicator *selectedSegmentIndicator;
 @property (nonatomic, getter=isAnimating) BOOL animating;
 
 - (void)moveSelectedSegmentIndicatorToSegmentAtIndex:(NSUInteger)index animated:(BOOL)animated;
@@ -145,7 +145,7 @@
         }
     }
     
-    return CGSizeMake(maxSegmentWidth * [self.segments count], 32.0f);
+    return CGSizeMake(maxSegmentWidth * self.segments.count, 32.0f);
 }
 
 - (CGSize)intrinsicContentSize {
@@ -155,9 +155,9 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    CGFloat segmentWidth = CGRectGetWidth(self.frame) / [self.segments count];
+    CGFloat segmentWidth = CGRectGetWidth(self.frame) / self.segments.count;
     CGFloat segmentHeight = CGRectGetHeight(self.frame);
-    for (int i = 0; i < [self.segments count]; i++) {
+    for (int i = 0; i < self.segments.count; i++) {
         NYSegment *segment = self.segments[i];
         segment.frame = CGRectMake(segmentWidth * i, 0.0f, segmentWidth, segmentHeight);
         
@@ -167,9 +167,10 @@
             }
             
             segment.titleLabel.font = self.titleFont;
-            segment.titleLabel.alternativeTextColor = self.selectedTitleTextColor;
+            segment.titleLabel.selectedFont = self.selectedTitleFont;
+
             segment.titleLabel.textColor = self.titleTextColor;
-            segment.titleLabel.alternativeFont = self.selectedTitleFont;
+            segment.titleLabel.selectedTextColor = self.selectedTitleTextColor;
         } else {
             segment.titleLabel.font = self.titleFont;
             segment.titleLabel.textColor = self.titleTextColor;
@@ -190,8 +191,8 @@
 }
 
 - (void)insertSegmentWithTitle:(NSString *)title atIndex:(NSUInteger)index {
-    if (index >= [self.segments count]) {
-        index = [self.segments count];
+    if (index >= self.segments.count) {
+        index = self.segments.count;
     }
     
     NYSegment *newSegment = [[NYSegment alloc] initWithTitle:title];
@@ -306,6 +307,9 @@
         // Style the segment the center of the indicator is covering
         [self.segments enumerateObjectsUsingBlock:^(NYSegment *segment, NSUInteger index, BOOL *stop) {
             CGRect segmentFrame = segment.frame;
+
+            // We get the intersection of the the selected segment indicator's frame and the segment's frame, so the text render view can show text with the
+            // selected style in the area covered by the selected segment indicator
             CGRect intersection = CGRectIntersection(segmentFrame, self.selectedSegmentIndicator.frame);
             CGAffineTransform transform = CGAffineTransformMakeTranslation(-CGRectGetMinX(segmentFrame), -CGRectGetMinY(segmentFrame));
             CGRect maskFrame = CGRectApplyAffineTransform(intersection, transform);
@@ -355,16 +359,18 @@
 #pragma mark - Helpers
 
 - (CGRect)indicatorFrameForSegment:(NYSegment *)segment {
-    return CGRectMake(CGRectGetMinX(segment.frame) + self.segmentIndicatorInset,
-                      CGRectGetMinY(segment.frame) + self.segmentIndicatorInset,
-                      CGRectGetWidth(segment.frame) - (2.0f * self.segmentIndicatorInset),
-                      CGRectGetHeight(segment.frame) - (2.0f * self.segmentIndicatorInset));
+    CGRect indicatorFrameRect = CGRectMake(CGRectGetMinX(segment.frame) + self.segmentIndicatorInset,
+                                           CGRectGetMinY(segment.frame) + self.segmentIndicatorInset,
+                                           CGRectGetWidth(segment.frame) - (2.0f * self.segmentIndicatorInset),
+                                           CGRectGetHeight(segment.frame) - (2.0f * self.segmentIndicatorInset));
+
+    return CGRectIntegral(indicatorFrameRect);
 }
 
 #pragma mark - Getters and Setters
 
 - (NSUInteger)numberOfSegments {
-    return [self.segments count];
+    return self.segments.count;
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
