@@ -2,8 +2,8 @@
 
 @interface NYSegmentTextRenderView ()
 
-@property (nonatomic, strong) NSDictionary *unselectedTextAttributes;
-@property (nonatomic, strong) NSDictionary *selectedTextAttributes;
+@property (nonatomic, strong, nonnull) NSDictionary<NSString *, id> *unselectedTextAttributes;
+@property (nonatomic, strong, nonnull) NSDictionary<NSString *, id> *selectedTextAttributes;
 
 @end
 
@@ -20,6 +20,7 @@
         _selectedFont = _font;
 
         [self setupSelectedAttributes];
+        [self setupUnselectedAttributes];
     }
 
     return self;
