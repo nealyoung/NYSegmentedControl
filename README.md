@@ -8,6 +8,7 @@ NYSegmentedControl is a customizable, animated replacement for UISegmentedContro
 * Create segmented controls with animated selection indicator
 * Customize colors, gradients, fonts, etc. either directly or globally with UIAppearance
 * Configure distinct text styles for the selected segment
+* VoiceOver/accessibility support
 
 ![Animated Example](https://github.com/nealyoung/NYSegmentedControl/raw/master/example-animated.gif)
 
