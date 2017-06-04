@@ -32,6 +32,7 @@
 
     [self addSegmentedControlExample:[self graySegmentedControl] withBackgroundColor:[UIColor colorWithWhite:0.96f alpha:1.0f]];
     [self addSegmentedControlExample:[self blueSegmentedControl] withBackgroundColor:[UIColor colorWithRed:0.36f green:0.64f blue:0.88f alpha:1.0f]];
+    [self addSegmentedControlExample:[self flatGraySegmentedControl] withBackgroundColor:[UIColor colorWithRed:0.12f green:0.12f blue:0.15f alpha:1.0f]];
     [self addSegmentedControlExample:[self purpleSegmentedControl] withBackgroundColor:[UIColor colorWithWhite:0.24f alpha:1.0f]];
     [self addSegmentedControlExample:[self switchSegmentedControl] withBackgroundColor:[UIColor colorWithWhite:0.18f alpha:1.0f]];
 }
@@ -74,6 +75,25 @@
     return blueSegmentedControl;
 }
 
+- (NYSegmentedControl *)flatGraySegmentedControl {
+    NYSegmentedControl *flatGraySegmentedControl = [[NYSegmentedControl alloc] initWithItems:@[@"ENGLISH", @"中文文学"]];
+    flatGraySegmentedControl.backgroundColor = [UIColor colorWithRed:0.09f green:0.09f blue:0.12f alpha:1.0f];
+    flatGraySegmentedControl.selectedTitleFont = [UIFont systemFontOfSize:12.0f weight:UIFontWeightSemibold];
+    flatGraySegmentedControl.titleFont = [UIFont systemFontOfSize:12.0f weight:UIFontWeightSemibold];
+    flatGraySegmentedControl.borderColor = [UIColor colorWithRed:0.18f green:0.18f blue:0.22f alpha:1.0f];
+    flatGraySegmentedControl.borderWidth = 2.0f;
+    flatGraySegmentedControl.segmentIndicatorBorderColor = [UIColor clearColor];
+    flatGraySegmentedControl.segmentIndicatorBackgroundColor = [UIColor colorWithRed:0.18f green:0.18f blue:0.22f alpha:1.0f];
+    flatGraySegmentedControl.segmentIndicatorInset = 5.0f;
+    flatGraySegmentedControl.titleTextColor = [UIColor colorWithRed:0.30f green:0.31f blue:0.36f alpha:1.0f];
+    flatGraySegmentedControl.selectedTitleTextColor = [UIColor whiteColor];
+    flatGraySegmentedControl.cornerRadius = 22.0f;
+    [flatGraySegmentedControl.widthAnchor constraintEqualToConstant:240.0f].active = YES;
+    [flatGraySegmentedControl.heightAnchor constraintEqualToConstant:44.0f].active = YES;
+
+    return flatGraySegmentedControl;
+}
+
 - (NYSegmentedControl *)purpleSegmentedControl {
     NYSegmentedControl *purpleSegmentedControl = [[NYSegmentedControl alloc] initWithItems:@[@"Lists", @"Followers"]];
     purpleSegmentedControl.borderWidth = 2.0f;
@@ -86,7 +106,7 @@
     purpleSegmentedControl.drawsGradientBackground = YES;
     purpleSegmentedControl.gradientTopColor = [UIColor colorWithWhite:0.17f alpha:1.0f];
     purpleSegmentedControl.gradientBottomColor = [UIColor colorWithWhite:0.05f alpha:1.0f];
-    purpleSegmentedControl.segmentIndicatorInset = 2.0f;
+    purpleSegmentedControl.segmentIndicatorInset = 4.0f;
     purpleSegmentedControl.segmentIndicatorBackgroundColor = [UIColor clearColor];
     purpleSegmentedControl.segmentIndicatorBorderWidth = 0.0f;
     purpleSegmentedControl.drawsSegmentIndicatorGradientBackground = YES;
